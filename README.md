@@ -1,4 +1,4 @@
-# To-Do-List
+# Exercise App
 The style guide we will use for now is based on the 
 default configuration of prettier which is
 
