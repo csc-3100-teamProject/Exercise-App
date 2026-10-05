@@ -19,6 +19,7 @@
     "prettier": "3.9.8"
   },
   "dependencies": {
+    "dotenv": "^18.0.5",
     "react-router": "^8.4.0"
   }
 }
