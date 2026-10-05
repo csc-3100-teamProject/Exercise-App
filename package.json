@@ -17,5 +17,8 @@
   "devDependencies": {
     "eslint-config-prettier": "^10.1.8",
     "prettier": "3.9.8"
+  },
+  "dependencies": {
+    "react-router": "^8.4.0"
   }
 }
