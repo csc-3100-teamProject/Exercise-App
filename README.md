@@ -16,3 +16,5 @@ For setting up prettier on VsCode follow: https://blog.yogeshchavan.dev/automati
 and for IntellJi follow: https://www.jetbrains.com/help/idea/prettier.html#prettier_before_you_start.
 
 Figma Link: https://www.figma.com/design/jAqtuf2LdNPl0aFrx7bWu9/Workout-Planner...?node-id=16-8&t=e4mua9m2qi1CbeiV-1
+
+For MongoDB, make sure to run npm install dotenv on local machine if you haven't yet.
