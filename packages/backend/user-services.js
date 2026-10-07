@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import userModel from './user.js'
-const dotenv = require('dotenv')
+import dotenv from 'dotenv'
 dotenv.config()
 
 mongoose.set('debug', true)
