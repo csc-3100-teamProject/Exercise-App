@@ -5,8 +5,7 @@ dotenv.config()
 
 mongoose.set('debug', true)
 
-mongoose.connect('mongodb://localhost:27017/users')
-
+mongoose.connect(process.env.MONGO_URI)
 function getUsers(name, job) {
     let promise
     if (name === undefined && job === undefined) {
