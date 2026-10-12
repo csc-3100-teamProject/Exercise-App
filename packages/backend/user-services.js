@@ -6,16 +6,12 @@ dotenv.config()
 mongoose.set('debug', true)
 
 mongoose.connect(process.env.MONGO_URI)
-function getUsers(name, job) {
+function getUsers(username) {
     let promise
-    if (name === undefined && job === undefined) {
+    if (username === undefined) {
         promise = userModel.find()
-    } else if (name && job) {
-        promise = findUserByNameAndJob(name, job)
-    } else if (name && !job) {
-        promise = findUserByName(name)
-    } else if (job && !name) {
-        promise = findUserByJob(job)
+    } else if (username) {
+        promise = findUserByUsername(username)
     }
     return promise
 }
@@ -30,16 +26,8 @@ function addUser(user) {
     return promise
 }
 
-function findUserByName(name) {
+function findUserByUsername(name) {
     return userModel.find({ name: name })
-}
-
-function findUserByJob(job) {
-    return userModel.find({ job: job })
-}
-
-function findUserByNameAndJob(name, job) {
-    return userModel.find({ name: name, job: job })
 }
 
 function findIdAndDestroy(id) {
@@ -50,8 +38,6 @@ export default {
     addUser,
     getUsers,
     findUserById,
-    findUserByName,
-    findUserByJob,
-    findUserByNameAndJob,
+    findUserByUsername,
     findIdAndDestroy,
 }

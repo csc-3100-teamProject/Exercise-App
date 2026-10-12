@@ -11,14 +11,13 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Welcome to Exercise App')
 })
 
 app.get('/users', (req, res) => {
-    const name = req.query.name
-    const job = req.query.job
+    const username = req.query.name
     functions
-        .getUsers(name, job)
+        .getUsers(username)
         .then((result) => {
             if (result) res.send(result)
             else res.status(404).send('User not found')
