@@ -32,7 +32,7 @@ function LoginPage() {
             type="email"
             autoComplete="username"
             value={email}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
             required
           />
 
@@ -43,7 +43,7 @@ function LoginPage() {
             type="password"
             autoComplete={isSigningUp ? "new-password" : "current-password"}
             value={password}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
             required
           />
 
