@@ -6,16 +6,16 @@ dotenv.config()
 mongoose.set('debug', true)
 
 mongoose.connect(process.env.MONGO_URI)
-function getUsers(name, job) {
+function getUsers(username, email) {
     let promise
-    if (name === undefined && job === undefined) {
+    if (username === undefined && email === undefined) {
         promise = userModel.find()
-    } else if (name && job) {
-        promise = findUserByNameAndJob(name, job)
-    } else if (name && !job) {
-        promise = findUserByName(name)
-    } else if (job && !name) {
-        promise = findUserByJob(job)
+    } else if (username && email) {
+        promise = findUserByUsernameAndEmail(username, email)
+    } else if (username && !email) {
+        promise = findUserByUsername(username)
+    } else if (email && !username) {
+        promise = findUserByEmail(email)
     }
     return promise
 }
@@ -30,16 +30,20 @@ function addUser(user) {
     return promise
 }
 
-function findUserByName(name) {
+function authentication(email, password) {
+    return userModel.find({ email: email, password: password })
+}
+
+function findUserByUsername(name) {
     return userModel.find({ name: name })
 }
 
-function findUserByJob(job) {
-    return userModel.find({ job: job })
+function findUserByUsernameAndEmail(name, email) {
+    return userModel.find({ name: name, email: email })
 }
 
-function findUserByNameAndJob(name, job) {
-    return userModel.find({ name: name, job: job })
+function findUserByEmail(email) {
+    return userModel.find({ email: email })
 }
 
 function findIdAndDestroy(id) {
@@ -50,8 +54,9 @@ export default {
     addUser,
     getUsers,
     findUserById,
-    findUserByName,
-    findUserByJob,
-    findUserByNameAndJob,
+    findUserByUsername,
+    findUserByUsernameAndEmail,
+    findUserByEmail,
     findIdAndDestroy,
+    authentication,
 }
