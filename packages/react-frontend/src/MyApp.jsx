@@ -1,8 +1,17 @@
-// src/MyApp.jsx
+import { useState } from "react";
 import LoginPage from "./pages/LoginPage";
+import OverviewPage from "./pages/OverviewPage";
 
 function MyApp() {
-    return <LoginPage />
+  const [showOverview, setShowOverview] = useState(false);
+
+  if (showOverview) {
+    return <OverviewPage />;
+  }
+
+  return (
+    <LoginPage onLogin={() => setShowOverview(true)} />
+  );
 }
 
 export default MyApp;
