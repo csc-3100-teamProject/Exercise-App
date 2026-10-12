@@ -90,3 +90,17 @@ body {
 .auth-switch button:hover {
   text-decoration: underline;
 }
+
+.form-error {
+  color: #ff8b8b;
+}
+
+.form-success {
+  color: #baff29;
+}
+
+.login-form button:disabled,
+.auth-switch button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
