@@ -11,7 +11,7 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    res.send('Welcome to Exercise App')
+    res.send('Welcome to Exercise App Backend')
 })
 
 app.get('/users', (req, res) => {
@@ -45,6 +45,9 @@ app.post('/users', (req, res) => {
     functions.addUser(userToAdd).then((result) => res.status(201).send(result))
 })
 
+app.post('/auth/login', (req, res) => {
+
+})
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']
     functions
