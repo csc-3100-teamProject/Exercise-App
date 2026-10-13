@@ -6,16 +6,16 @@ dotenv.config()
 mongoose.set('debug', true)
 
 mongoose.connect(process.env.MONGO_URI)
-function getUsers(name, job) {
+function getUsers(username, email) {
     let promise
-    if (name === undefined && job === undefined) {
+    if (username === undefined && email === undefined) {
         promise = userModel.find()
-    } else if (name && job) {
-        promise = findUserByNameAndJob(name, job)
-    } else if (name && !job) {
-        promise = findUserByName(name)
-    } else if (job && !name) {
-        promise = findUserByJob(job)
+    } else if (username && email) {
+        promise = findUserByUsernameAndEmail(username, email)
+    } else if (username && !email) {
+        promise = findUserByUsername(username)
+    } else if (email && !username) {
+        promise = findUserByEmail(email)
     }
     return promise
 }
@@ -24,22 +24,43 @@ function findUserById(id) {
     return userModel.findById(id)
 }
 
-function addUser(user) {
-    const userToAdd = new userModel(user)
-    const promise = userToAdd.save()
-    return promise
+async function addUser(user) {
+    const finduser = await findUserByUsername(user.username)
+    const findemail = await findUserByEmail(user.email)
+    if (!finduser && !findemail) {
+        const userToAdd = new userModel(user)
+        const promise = userToAdd.save()
+        return promise
+    }
+    return 409
 }
 
-function findUserByName(name) {
-    return userModel.find({ name: name })
+async function loginCheck(email, password) {
+    const findEmail = await findUserByEmail(email)
+    if (findEmail && password === findEmail.password) {
+        return 200
+    }
+    return 404
 }
 
-function findUserByJob(job) {
-    return userModel.find({ job: job })
+function authentication(email, password) {
+    return userModel.find({ email: email, password: password })
 }
 
-function findUserByNameAndJob(name, job) {
-    return userModel.find({ name: name, job: job })
+function findUserByUsername(username) {
+    return userModel.findOne({ username: username })
+}
+
+function findUserByUsernameAndEmail(username, email) {
+    return userModel.find({ username: username, email: email })
+}
+
+function findUserByEmail(email) {
+    return userModel.findOne({ email: email })
+}
+
+function findUserPassword(password) {
+    return userModel.findOne({ password: password })
 }
 
 function findIdAndDestroy(id) {
@@ -50,8 +71,11 @@ export default {
     addUser,
     getUsers,
     findUserById,
-    findUserByName,
-    findUserByJob,
-    findUserByNameAndJob,
+    findUserByUsername,
+    findUserByUsernameAndEmail,
+    findUserByEmail,
+    findUserPassword,
     findIdAndDestroy,
+    loginCheck,
+    authentication,
 }

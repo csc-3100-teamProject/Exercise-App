@@ -11,14 +11,13 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Welcome to Exercise App Backend')
 })
 
 app.get('/users', (req, res) => {
-    const name = req.query.name
-    const job = req.query.job
+    const username = req.query.name
     functions
-        .getUsers(name, job)
+        .getUsers(username)
         .then((result) => {
             if (result) res.send(result)
             else res.status(404).send('User not found')
@@ -43,7 +42,19 @@ app.get('/users/:id', (req, res) => {
 
 app.post('/users', (req, res) => {
     const userToAdd = req.body
-    functions.addUser(userToAdd).then((result) => res.status(201).send(result))
+    functions.addUser(userToAdd).then((result) => {
+        if (result !== 409) res.status(200).send()
+        else res.status(409).send()
+    })
+})
+
+app.post('/auth/login', (req, res) => {
+    const email = req.body.email
+    const password = req.body.password
+    functions.loginCheck(email, password).then((result) => {
+        if (result !== 404) res.status(200).send()
+        else res.status(404).send()
+    })
 })
 
 app.delete('/users/:id', (req, res) => {
