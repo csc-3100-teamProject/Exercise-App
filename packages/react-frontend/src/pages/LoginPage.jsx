@@ -13,10 +13,6 @@ function LoginPage({ onLogin }) {
         event.preventDefault()
 
         if (isSubmitting) return
-        if (!isSigningUp) {
-            onLogin()
-            return
-        }
 
         setErrorMessage('')
         setSuccessMessage('')
@@ -50,24 +46,28 @@ function LoginPage({ onLogin }) {
             signal: AbortSignal.timeout(10000),
         })
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error(
-                        response.status === 401
-                            ? 'Incorrect email or password.'
-                            : 'The request failed. Please try again.'
-                    )
+                if (response.status === 409) {
+                    throw new Error("That username or email is already in use.");
                 }
 
-                setPassword('')
+                if (response.status === 404) {
+                    throw new Error("Incorrect email or password.");
+                }
+
+                if (response.status !== 200) {
+                    throw new Error("The request failed. Please try again.");
+                }
+
+                setPassword("");
 
                 if (isSigningUp) {
-                    setIsSigningUp(false)
-                    setUsername('')
-                    setSuccessMessage('Account created. Log in to continue.')
+                    setIsSigningUp(false);
+                    setUsername("");
+                    setSuccessMessage("Account created. Log in to continue.");
                 } else {
-                    setSuccessMessage('Login accepted.')
+                    onLogin();
                 }
-            })
+                })
             .catch((error) => {
                 if (error.name === 'TimeoutError') {
                     setErrorMessage(
