@@ -1,106 +1,106 @@
 body {
-  margin: 0;
+    margin: 0;
 }
 
 .login-page {
-  min-height: 100vh;
-  box-sizing: border-box;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: #080c0e;
-  color: #f5f7fa;
-  font-family: Arial, sans-serif;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: #080c0e;
+    color: #f5f7fa;
+    font-family: Arial, sans-serif;
 }
 
 .login-card {
-  width: 100%;
-  max-width: 440px;
-  box-sizing: border-box;
-  padding: 28px;
-  background: #12171d;
-  border: 1px solid #27313d;
-  border-radius: 24px;
+    width: 100%;
+    max-width: 440px;
+    box-sizing: border-box;
+    padding: 28px;
+    background: #12171d;
+    border: 1px solid #27313d;
+    border-radius: 24px;
 }
 
 .login-brand {
-  color: #baff29;
-  font-weight: 700;
-  letter-spacing: 2px;
+    color: #baff29;
+    font-weight: 700;
+    letter-spacing: 2px;
 }
 
 .login-card h1 {
-  margin-bottom: 12px;
-  font-size: 32px;
+    margin-bottom: 12px;
+    font-size: 32px;
 }
 
 .login-subtitle {
-  margin-bottom: 28px;
-  color: #99a3b0;
-  line-height: 1.5;
+    margin-bottom: 28px;
+    color: #99a3b0;
+    line-height: 1.5;
 }
 
 .login-form {
-  display: grid;
-  gap: 12px;
+    display: grid;
+    gap: 12px;
 }
 
 .login-form label {
-  color: #99a3b0;
+    color: #99a3b0;
 }
 
 .login-form input {
-  min-width: 0;
-  padding: 14px;
-  background: #1c232c;
-  color: #f5f7fa;
-  border: 1px solid #27313d;
-  border-radius: 12px;
-  font: inherit;
+    min-width: 0;
+    padding: 14px;
+    background: #1c232c;
+    color: #f5f7fa;
+    border: 1px solid #27313d;
+    border-radius: 12px;
+    font: inherit;
 }
 
 .login-form button {
-  margin-top: 12px;
-  padding: 14px;
-  background: #baff29;
-  color: #080c0e;
-  border: 0;
-  border-radius: 12px;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
+    margin-top: 12px;
+    padding: 14px;
+    background: #baff29;
+    color: #080c0e;
+    border: 0;
+    border-radius: 12px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
 }
 
 .auth-switch {
-  margin: 24px 0 0;
-  color: #99a3b0;
-  text-align: center;
+    margin: 24px 0 0;
+    color: #99a3b0;
+    text-align: center;
 }
 
 .auth-switch button {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #baff29;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #baff29;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
 }
 
 .auth-switch button:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .form-error {
-  color: #ff8b8b;
+    color: #ff8b8b;
 }
 
 .form-success {
-  color: #baff29;
+    color: #baff29;
 }
 
 .login-form button:disabled,
 .auth-switch button:disabled {
-  opacity: 0.6;
-  cursor: wait;
+    opacity: 0.6;
+    cursor: wait;
 }
