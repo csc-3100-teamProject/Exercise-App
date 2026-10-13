@@ -24,26 +24,43 @@ function findUserById(id) {
     return userModel.findById(id)
 }
 
-function addUser(user) {
-    const userToAdd = new userModel(user)
-    const promise = userToAdd.save()
-    return promise
+async function addUser(user) {
+    const finduser = await findUserByUsername(user.username)
+    const findemail = await findUserByEmail(user.email)
+    if (!finduser && !findemail) {
+        const userToAdd = new userModel(user)
+        const promise = userToAdd.save()
+        return promise
+    }
+    return 409
+}
+
+async function loginCheck(email, password) {
+    const findEmail = await findUserByEmail(email)
+    if (findEmail && password === findEmail.password) {
+        return 200
+    }
+    return 404
 }
 
 function authentication(email, password) {
     return userModel.find({ email: email, password: password })
 }
 
-function findUserByUsername(name) {
-    return userModel.find({ name: name })
+function findUserByUsername(username) {
+    return userModel.findOne({ username: username })
 }
 
-function findUserByUsernameAndEmail(name, email) {
-    return userModel.find({ name: name, email: email })
+function findUserByUsernameAndEmail(username, email) {
+    return userModel.find({ username: username, email: email })
 }
 
 function findUserByEmail(email) {
-    return userModel.find({ email: email })
+    return userModel.findOne({ email: email })
+}
+
+function findUserPassword(password) {
+    return userModel.findOne({ password: password })
 }
 
 function findIdAndDestroy(id) {
@@ -57,6 +74,8 @@ export default {
     findUserByUsername,
     findUserByUsernameAndEmail,
     findUserByEmail,
+    findUserPassword,
     findIdAndDestroy,
+    loginCheck,
     authentication,
 }

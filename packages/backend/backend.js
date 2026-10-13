@@ -42,12 +42,21 @@ app.get('/users/:id', (req, res) => {
 
 app.post('/users', (req, res) => {
     const userToAdd = req.body
-    functions.addUser(userToAdd).then((result) => res.status(201).send(result))
+    functions.addUser(userToAdd).then((result) => {
+        if (result !== 409) res.status(200).send()
+        else res.status(409).send()
+    })
 })
 
 app.post('/auth/login', (req, res) => {
-
+    const email = req.body.email
+    const password = req.body.password
+    functions.loginCheck(email, password).then((result) => {
+        if (result !== 404) res.status(200).send()
+        else res.status(404).send()
+    })
 })
+
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']
     functions
