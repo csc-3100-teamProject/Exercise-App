@@ -47,10 +47,6 @@ async function loginCheck(email, password) {
     return 404
 }
 
-function authentication(email, password) {
-    return userModel.find({ email: email, password: password })
-}
-
 function findUserByUsername(username) {
     return userModel.findOne({ username: username })
 }
@@ -81,5 +77,4 @@ export default {
     findUserPassword,
     findIdAndDestroy,
     loginCheck,
-    authentication,
 }
