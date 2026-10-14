@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import userModel from './user.js'
 import dotenv from 'dotenv'
+import bcrypt, { hash } from 'bcrypt'
 dotenv.config()
 
 mongoose.set('debug', true)
@@ -28,6 +29,8 @@ async function addUser(user) {
     const finduser = await findUserByUsername(user.username)
     const findemail = await findUserByEmail(user.email)
     if (!finduser && !findemail) {
+        const hashed = await bcrypt.hash(user.password, 12)
+        user.password = hashed
         const userToAdd = new userModel(user)
         const promise = userToAdd.save()
         return promise
@@ -37,8 +40,9 @@ async function addUser(user) {
 
 async function loginCheck(email, password) {
     const findEmail = await findUserByEmail(email)
-    if (findEmail && password === findEmail.password) {
-        return 200
+    if (findEmail) {
+        const passwordCheck = await bcrypt.compare(password, findEmail.password)
+        if (passwordCheck) return 200
     }
     return 404
 }
