@@ -65,9 +65,9 @@ function LoginPage({ onLogin }) {
                     setUsername("");
                     setSuccessMessage("Account created. Log in to continue.");
                 } else {
-                    onLogin();
+                    return response.json().then(onLogin)
                 }
-                })
+            })
             .catch((error) => {
                 if (error.name === 'TimeoutError') {
                     setErrorMessage(

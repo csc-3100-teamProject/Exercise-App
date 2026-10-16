@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 import userModel from './user.js'
+import workoutModel from './workout.js'
+import { buildOverview } from './overview.js'
 import dotenv from 'dotenv'
 import bcrypt, { hash } from 'bcrypt'
 dotenv.config()
@@ -42,9 +44,31 @@ async function loginCheck(email, password) {
     const findEmail = await findUserByEmail(email)
     if (findEmail) {
         const passwordCheck = await bcrypt.compare(password, findEmail.password)
-        if (passwordCheck) return 200
+        if (passwordCheck) return findEmail
     }
     return 404
+}
+
+async function getOverview(id, today) {
+    const user = await findUserById(id)
+    if (!user) return null
+    const workouts = await workoutModel.find({ userId: id }).lean()
+    return buildOverview({ user, workouts, today })
+}
+
+async function addWorkout(userId, workout) {
+    const user = await findUserById(userId)
+    if (!user) return null
+    const { name, category, date, time, durationMin, exercises } = workout
+    return new workoutModel({
+        userId,
+        name,
+        category,
+        date,
+        time,
+        durationMin,
+        exercises,
+    }).save()
 }
 
 function findUserByUsername(username) {
@@ -77,4 +101,6 @@ export default {
     findUserPassword,
     findIdAndDestroy,
     loginCheck,
+    getOverview,
+    addWorkout,
 }

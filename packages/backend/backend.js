@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import functions from './user-services.js'
 import dotenv from 'dotenv'
+import mongoose from 'mongoose'
 
 const app = express()
 const port = 8000
@@ -52,9 +53,50 @@ app.post('/auth/login', (req, res) => {
     const email = req.body.email
     const password = req.body.password
     functions.loginCheck(email, password).then((result) => {
-        if (result !== 404) res.status(200).send()
+        if (result !== 404)
+            res.status(200).send({ id: result._id, username: result.username })
         else res.status(404).send()
     })
+})
+
+app.get('/users/:id/overview', (req, res) => {
+    const id = req.params['id']
+    const today = req.query.date
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(404).send('User not found')
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) {
+        return res.status(400).send('date must be YYYY-MM-DD')
+    }
+    functions
+        .getOverview(id, today)
+        .then((result) => {
+            if (result) res.send(result)
+            else res.status(404).send('User not found')
+        })
+        .catch((error) => {
+            res.status(500).send(error.name)
+        })
+})
+
+app.post('/users/:id/workouts', (req, res) => {
+    const id = req.params['id']
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(404).send('User not found')
+    }
+    functions
+        .addWorkout(id, req.body)
+        .then((result) => {
+            if (result) res.status(201).send(result)
+            else res.status(404).send('User not found')
+        })
+        .catch((error) => {
+            if (error.name === 'ValidationError') {
+                res.status(400).send(error.message)
+            } else {
+                res.status(500).send(error.name)
+            }
+        })
 })
 
 app.delete('/users/:id', (req, res) => {

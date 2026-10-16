@@ -2,14 +2,20 @@ import { useState } from 'react'
 import LoginPage from './pages/LoginPage'
 import OverviewPage from './pages/OverviewPage'
 
-function MyApp() {
-    const [showOverview, setShowOverview] = useState(false)
+// Dev-only login bypass: set VITE_DEV_USER_ID in .env.local to skip the login page.
+const devUser =
+    import.meta.env.DEV && import.meta.env.VITE_DEV_USER_ID
+        ? { id: import.meta.env.VITE_DEV_USER_ID, username: 'Jordan' }
+        : null
 
-    if (showOverview) {
-        return <OverviewPage />
+function MyApp() {
+    const [user, setUser] = useState(devUser)
+
+    if (user) {
+        return <OverviewPage user={user} />
     }
 
-    return <LoginPage onLogin={() => setShowOverview(true)} />
+    return <LoginPage onLogin={setUser} />
 }
 
 export default MyApp
