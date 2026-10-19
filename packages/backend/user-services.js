@@ -23,10 +23,6 @@ function getUsers(username, email) {
     return promise
 }
 
-function findUserById(id) {
-    return userModel.findById(id)
-}
-
 async function addUser(user) {
     const finduser = await findUserByUsername(user.username)
     const findemail = await findUserByEmail(user.email)
@@ -71,20 +67,20 @@ async function addWorkout(userId, workout) {
     }).save()
 }
 
+function findUserById(id) {
+    return userModel.findById(id)
+}
+
 function findUserByUsername(username) {
     return userModel.findOne({ username: username })
 }
 
 function findUserByUsernameAndEmail(username, email) {
-    return userModel.find({ username: username, email: email })
+    return userModel.findOne({ username: username, email: email })
 }
 
 function findUserByEmail(email) {
     return userModel.findOne({ email: email })
-}
-
-function findUserPassword(password) {
-    return userModel.findOne({ password: password })
 }
 
 function findIdAndDestroy(id) {
@@ -98,7 +94,6 @@ export default {
     findUserByUsername,
     findUserByUsernameAndEmail,
     findUserByEmail,
-    findUserPassword,
     findIdAndDestroy,
     loginCheck,
     getOverview,

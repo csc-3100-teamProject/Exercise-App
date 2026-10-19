@@ -24,6 +24,8 @@
         "bcrypt": "^6.0.0",
         "concurrently": "^10.0.5",
         "dotenv": "^18.0.5",
+        "jest": "^30.5.2",
+        "mockingoose": "^3.0.0",
         "mongoose": "^9.11.0",
         "react-router": "^8.4.0"
     }
