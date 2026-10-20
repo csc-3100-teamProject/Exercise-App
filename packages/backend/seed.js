@@ -31,15 +31,54 @@ const lowerBody = [
 ]
 
 const workouts = [
-    { name: 'Tempo Run', category: 'Cardio', date: at(-2), time: '07:00', durationMin: 34, completed: true },
-    { name: 'Lower Body', category: 'Strength', date: at(0), time: '18:00', durationMin: 48, exercises: lowerBody, completed: true },
-    { name: 'Upper Body Power', category: 'Strength', date: at(1), time: '18:00', durationMin: 55, exercises: upperBody, completed: true },
-    { name: 'Upper Body Power', category: 'Strength', date: at(2), time: '18:00', durationMin: 55, exercises: upperBody },
-    { name: 'Lower Body', category: 'Strength', date: at(4), time: '18:00', durationMin: 48, exercises: lowerBody },
+    {
+        name: 'Tempo Run',
+        category: 'Cardio',
+        date: at(-2),
+        time: '07:00',
+        durationMin: 34,
+        completed: true,
+    },
+    {
+        name: 'Lower Body',
+        category: 'Strength',
+        date: at(0),
+        time: '18:00',
+        durationMin: 48,
+        exercises: lowerBody,
+        completed: true,
+    },
+    {
+        name: 'Upper Body Power',
+        category: 'Strength',
+        date: at(1),
+        time: '18:00',
+        durationMin: 55,
+        exercises: upperBody,
+        completed: true,
+    },
+    {
+        name: 'Upper Body Power',
+        category: 'Strength',
+        date: at(2),
+        time: '18:00',
+        durationMin: 55,
+        exercises: upperBody,
+    },
+    {
+        name: 'Lower Body',
+        category: 'Strength',
+        date: at(4),
+        time: '18:00',
+        durationMin: 48,
+        exercises: lowerBody,
+    },
 ]
 
 await mongoose.connect(process.env.MONGO_URI)
 await workoutModel.deleteMany({ userId })
 await workoutModel.insertMany(workouts.map((w) => ({ ...w, userId })))
-console.log(`Seeded ${workouts.length} workouts for ${userId} (week of ${monday})`)
+console.log(
+    `Seeded ${workouts.length} workouts for ${userId} (week of ${monday})`
+)
 await mongoose.disconnect()

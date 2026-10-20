@@ -356,6 +356,7 @@ function OverviewPage({ user, onStart, onAdd }) {
         return () => controller.abort()
     }, [user.id])
 
+    const username = overview?.user.username ?? user.username
     const today = parseDate(overview?.today ?? localDateString())
 
     return (
@@ -364,7 +365,8 @@ function OverviewPage({ user, onStart, onAdd }) {
                 <header className="overview-header">
                     <div>
                         <h1>
-                            {greeting()}, {user.username}.
+                            {greeting()}
+                            {username ? `, ${username}` : ''}.
                         </h1>
                         <p className="overview-date">
                             {today.toLocaleDateString('en-US', {

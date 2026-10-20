@@ -47,23 +47,27 @@ function LoginPage({ onLogin }) {
         })
             .then((response) => {
                 if (response.status === 409) {
-                    throw new Error("That username or email is already in use.");
+                    throw new Error('That username or email is already in use.')
                 }
 
                 if (response.status === 404) {
-                    throw new Error("Incorrect email or password.");
+                    throw new Error('Incorrect email or password.')
+                }
+
+                if (response.status === 400) {
+                    throw new Error('Fill in every field and try again.')
                 }
 
                 if (response.status !== 200) {
-                    throw new Error("The request failed. Please try again.");
+                    throw new Error('The request failed. Please try again.')
                 }
 
-                setPassword("");
+                setPassword('')
 
                 if (isSigningUp) {
-                    setIsSigningUp(false);
-                    setUsername("");
-                    setSuccessMessage("Account created. Log in to continue.");
+                    setIsSigningUp(false)
+                    setUsername('')
+                    setSuccessMessage('Account created. Log in to continue.')
                 } else {
                     return response.json().then(onLogin)
                 }

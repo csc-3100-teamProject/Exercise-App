@@ -3,12 +3,15 @@ import userModel from './user.js'
 import workoutModel from './workout.js'
 import { buildOverview } from './overview.js'
 import dotenv from 'dotenv'
-import bcrypt, { hash } from 'bcrypt'
+import bcrypt from 'bcrypt'
 dotenv.config()
 
 mongoose.set('debug', true)
 
-mongoose.connect(process.env.MONGO_URI)
+// Tests connect to their own in-memory database instead.
+if (process.env.NODE_ENV !== 'test') {
+    mongoose.connect(process.env.MONGO_URI)
+}
 function getUsers(username, email) {
     let promise
     if (username === undefined && email === undefined) {
@@ -28,10 +31,12 @@ async function addUser(user) {
     const findemail = await findUserByEmail(user.email)
     if (!finduser && !findemail) {
         const hashed = await bcrypt.hash(user.password, 12)
-        user.password = hashed
-        const userToAdd = new userModel(user)
-        const promise = userToAdd.save()
-        return promise
+        const userToAdd = new userModel({
+            username: user.username,
+            email: user.email,
+            password: hashed,
+        })
+        return userToAdd.save()
     }
     return 409
 }

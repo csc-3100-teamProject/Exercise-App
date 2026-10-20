@@ -5,7 +5,7 @@ import OverviewPage from './pages/OverviewPage'
 // Dev-only login bypass: set VITE_DEV_USER_ID in .env.local to skip the login page.
 const devUser =
     import.meta.env.DEV && import.meta.env.VITE_DEV_USER_ID
-        ? { id: import.meta.env.VITE_DEV_USER_ID, username: 'Jordan' }
+        ? { id: import.meta.env.VITE_DEV_USER_ID }
         : null
 
 function MyApp() {
