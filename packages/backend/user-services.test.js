@@ -106,13 +106,37 @@ test('Testing addUser with duplicate emails', async () => {
 })
 
 //Testing getUsers functions
-test('Testing getUsers with undefined username and email', async () => {})
+test('Testing getUsers with undefined username and email', async () => {
+    mockingoose(User).toReturn([], 'find')
+    const result = await functions.getUsers(undefined, undefined)
 
-test('Testing getUsers with both username and email', async () => {})
+    expect(result).toEqual([])
+})
 
-test('Testing getUsers with username', async () => {})
+test('Testing getUsers with both username and email', async () => {
+    mockingoose(User).toReturn(
+        { username: 'Jacky', email: 'Yesman666@gmail.com' },
+        'findOne'
+    )
+    const result = await functions.getUsers('Jacky', 'Yesman666@gmail.com')
 
-test('Testing getUsers with email', async () => {})
+    expect(result.username).toBe('Jacky')
+    expect(result.email).toBe('Yesman666@gmail.com')
+})
+
+test('Testing getUsers with username', async () => {
+    mockingoose(User).toReturn({ username: 'Jacky' }, 'findOne')
+    const result = await functions.getUsers('Jacky', undefined)
+
+    expect(result.username).toBe('Jacky')
+})
+
+test('Testing getUsers with email', async () => {
+    mockingoose(User).toReturn({ email: 'Yesman666@gmail.com' }, 'findOne')
+    const result = await functions.getUsers(undefined, 'Yesman666@gmail.com')
+
+    expect(result.email).toBe('Yesman666@gmail.com')
+})
 
 //Testing find username and email functions
 test('Testing findUserByUsernameAndEmail', async () => {

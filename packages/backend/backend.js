@@ -6,10 +6,11 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 
 const app = express()
-const port = 8000
 
 app.use(cors())
 app.use(express.json())
+
+const port = 8000
 
 app.get('/', (req, res) => {
     res.send('Welcome to Exercise App Backend')
@@ -115,3 +116,5 @@ app.delete('/users/:id', (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
+
+export default app
