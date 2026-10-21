@@ -333,7 +333,7 @@ const NAV_ITEMS = [
     ['profile', 'Profile'],
 ]
 
-function OverviewPage({ user, onStart, onAdd }) {
+function OverviewPage({ user, onStart, onAdd, onNavigate }) {
     const [overview, setOverview] = useState(null)
     const [error, setError] = useState('')
 
@@ -405,7 +405,10 @@ function OverviewPage({ user, onStart, onAdd }) {
                             <h2 id="today-heading">Today’s plan</h2>
                             <div className="section-sub">
                                 <p>{planSummary(overview.todaysPlan)}</p>
-                                <button type="button" className="link-button">
+                                <button 
+					type="button" 
+					className="link-button">
+					onClick={() => onNavigate('calendar')}
                                     View calendar
                                 </button>
                             </div>
@@ -433,6 +436,11 @@ function OverviewPage({ user, onStart, onAdd }) {
                         type="button"
                         className={label === 'Overview' ? 'nav-active' : ''}
                         aria-current={label === 'Overview' ? 'page' : undefined}
+			onClick={() => {
+                		if (label === 'Calendar') {
+                    			onNavigate('calendar')
+                		}
+            		}}
                     >
                         <Icon name={icon} />
                         <span>{label}</span>
