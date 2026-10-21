@@ -2,13 +2,14 @@
 import express from 'express'
 import cors from 'cors'
 import functions from './user-services.js'
-import dotenv from 'dotenv'
+import mongoose from 'mongoose'
 
 const app = express()
-const port = 8000
 
 app.use(cors())
 app.use(express.json())
+
+const port = 8000
 
 app.get('/', (req, res) => {
     res.send('Welcome to Exercise App Backend')
@@ -40,21 +41,84 @@ app.get('/users/:id', (req, res) => {
         })
 })
 
+function isNonEmptyString(value) {
+    return typeof value === 'string' && value.trim() !== ''
+}
+
 app.post('/users', (req, res) => {
-    const userToAdd = req.body
-    functions.addUser(userToAdd).then((result) => {
-        if (result !== 409) res.status(200).send()
-        else res.status(409).send()
-    })
+    const { username, email, password } = req.body ?? {}
+    if (![username, email, password].every(isNonEmptyString)) {
+        return res.status(400).send('username, email and password are required')
+    }
+    functions
+        .addUser({ username, email, password })
+        .then((result) => {
+            if (result !== 409) res.status(200).send()
+            else res.status(409).send()
+        })
+        .catch((error) => {
+            res.status(500).send(error.name)
+        })
 })
 
 app.post('/auth/login', (req, res) => {
-    const email = req.body.email
-    const password = req.body.password
-    functions.loginCheck(email, password).then((result) => {
-        if (result !== 404) res.status(200).send()
-        else res.status(404).send()
-    })
+    const { email, password } = req.body ?? {}
+    if (![email, password].every(isNonEmptyString)) {
+        return res.status(400).send('email and password are required')
+    }
+    functions
+        .loginCheck(email.trim(), password)
+        .then((result) => {
+            if (result !== 404)
+                res.status(200).send({
+                    id: result._id,
+                    username: result.username,
+                })
+            else res.status(404).send()
+        })
+        .catch((error) => {
+            res.status(500).send(error.name)
+        })
+})
+
+app.get('/users/:id/overview', (req, res) => {
+    const id = req.params['id']
+    const today = req.query.date
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(404).send('User not found')
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) {
+        return res.status(400).send('date must be YYYY-MM-DD')
+    }
+    functions
+        .getOverview(id, today)
+        .then((result) => {
+            if (result) res.send(result)
+            else res.status(404).send('User not found')
+        })
+        .catch((error) => {
+            res.status(500).send(error.name)
+        })
+})
+
+app.post('/users/:id/workouts', (req, res) => {
+    const id = req.params['id']
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(404).send('User not found')
+    }
+    functions
+        .addWorkout(id, req.body)
+        .then((result) => {
+            if (result) res.status(201).send(result)
+            else res.status(404).send('User not found')
+        })
+        .catch((error) => {
+            if (error.name === 'ValidationError') {
+                res.status(400).send(error.message)
+            } else {
+                res.status(500).send(error.name)
+            }
+        })
 })
 
 app.delete('/users/:id', (req, res) => {
@@ -70,6 +134,10 @@ app.delete('/users/:id', (req, res) => {
         })
 })
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-})
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`Example app listening at http://localhost:${port}`)
+    })
+}
+
+export default app

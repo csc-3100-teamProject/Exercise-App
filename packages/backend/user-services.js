@@ -1,11 +1,17 @@
 import mongoose from 'mongoose'
 import userModel from './user.js'
+import workoutModel from './workout.js'
+import { buildOverview } from './overview.js'
 import dotenv from 'dotenv'
+import bcrypt from 'bcrypt'
 dotenv.config()
 
 mongoose.set('debug', true)
 
-mongoose.connect(process.env.MONGO_URI)
+// Tests connect to their own in-memory database instead.
+if (process.env.NODE_ENV !== 'test') {
+    mongoose.connect(process.env.MONGO_URI)
+}
 function getUsers(username, email) {
     let promise
     if (username === undefined && email === undefined) {
@@ -20,31 +26,54 @@ function getUsers(username, email) {
     return promise
 }
 
-function findUserById(id) {
-    return userModel.findById(id)
-}
-
 async function addUser(user) {
     const finduser = await findUserByUsername(user.username)
     const findemail = await findUserByEmail(user.email)
     if (!finduser && !findemail) {
-        const userToAdd = new userModel(user)
-        const promise = userToAdd.save()
-        return promise
+        const hashed = await bcrypt.hash(user.password, 12)
+        const userToAdd = new userModel({
+            username: user.username,
+            email: user.email,
+            password: hashed,
+        })
+        return userToAdd.save()
     }
     return 409
 }
 
 async function loginCheck(email, password) {
     const findEmail = await findUserByEmail(email)
-    if (findEmail && password === findEmail.password) {
-        return 200
+    if (findEmail) {
+        const passwordCheck = await bcrypt.compare(password, findEmail.password)
+        if (passwordCheck) return findEmail
     }
     return 404
 }
 
-function authentication(email, password) {
-    return userModel.find({ email: email, password: password })
+async function getOverview(id, today) {
+    const user = await findUserById(id)
+    if (!user) return null
+    const workouts = await workoutModel.find({ userId: id }).lean()
+    return buildOverview({ user, workouts, today })
+}
+
+async function addWorkout(userId, workout) {
+    const user = await findUserById(userId)
+    if (!user) return null
+    const { name, category, date, time, durationMin, exercises } = workout
+    return new workoutModel({
+        userId,
+        name,
+        category,
+        date,
+        time,
+        durationMin,
+        exercises,
+    }).save()
+}
+
+function findUserById(id) {
+    return userModel.findById(id)
 }
 
 function findUserByUsername(username) {
@@ -52,15 +81,11 @@ function findUserByUsername(username) {
 }
 
 function findUserByUsernameAndEmail(username, email) {
-    return userModel.find({ username: username, email: email })
+    return userModel.findOne({ username: username, email: email })
 }
 
 function findUserByEmail(email) {
     return userModel.findOne({ email: email })
-}
-
-function findUserPassword(password) {
-    return userModel.findOne({ password: password })
 }
 
 function findIdAndDestroy(id) {
@@ -74,8 +99,8 @@ export default {
     findUserByUsername,
     findUserByUsernameAndEmail,
     findUserByEmail,
-    findUserPassword,
     findIdAndDestroy,
     loginCheck,
-    authentication,
+    getOverview,
+    addWorkout,
 }

@@ -3,13 +3,16 @@ import LoginPage from './pages/LoginPage'
 import OverviewPage from './pages/CalendarPage'
 
 function MyApp() {
-    const [showOverview, setShowOverview] = useState(false)
-
-    if (showOverview) {
-        return <OverviewPage />
+    const [user, setUser] = useState(devUser)
+    const [currentPage, setCurrentPage] = useState('overview')
+    if (user) {
+        if (currentPage === 'calendar') {
+		return <CalendarPage user={user} onNavigate={setCurrentPage} />
+        }
+	return <OverviewPage user={user} onNavigate={setCurrentPage} />
     }
 
-    return <LoginPage onLogin={() => setShowOverview(true)} />
+    return <LoginPage onLogin={setUser} />
 }
 
 export default MyApp

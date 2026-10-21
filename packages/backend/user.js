@@ -17,6 +17,12 @@ const UserSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        weeklyGoal: {
+            type: Number,
+            default: 5,
+            min: 1,
+            max: 7,
+        },
     },
     { collection: 'users_list' }
 )

@@ -7,11 +7,15 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "NODE_OPTIONS=--experimental-vm-modules jest",
         "dev": "npx nodemon backend.js",
         "lint": "eslint ."
     },
+    "jest": {
+        "transform": {}
+    },
     "dependencies": {
+        "bcrypt": "^6.0.0",
         "cors": "^2.8.6",
         "express": "^5.2.1"
     }
