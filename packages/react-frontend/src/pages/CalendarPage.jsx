@@ -2,6 +2,7 @@ import './CalendarPage.css'
 import { useState } from 'react'
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const CATEGORIES = ['Strength', 'Cardio', 'Mobility']
 
 function localDateString(date = new Date()) {
     const year = date.getFullYear()
@@ -13,6 +14,19 @@ function localDateString(date = new Date()) {
 function parseDate(dateStr) {
     const [y, m, d] = dateStr.split('-').map(Number)
     return new Date(y, m - 1, d)
+}
+
+function formatTime(time) {
+    if (!time) return 'Any time'
+    const [h, m] = time.split(':').map(Number)
+    const suffix = h >= 12 ? 'PM' : 'AM'
+    return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${suffix}`
+}
+
+function categoryColor(category) {
+    if (category === 'Cardio') return '#54d2bd'
+    if (category === 'Mobility') return '#a78bfa'
+    return '#c6f35c'
 }
 
 function Icon({ name }) {
@@ -63,7 +77,7 @@ const NAV_ITEMS = [
     ['profile', 'Profile'],
 ]
 
-function MonthGrid({ month, selectedDate, onSelect }) {
+function MonthGrid({ month, selectedDate, workouts, onSelect }) {
     const year = month.getFullYear()
     const monthIndex = month.getMonth()
     const firstDay = (month.getDay() + 6) % 7
@@ -95,6 +109,11 @@ function MonthGrid({ month, selectedDate, onSelect }) {
                     )
                 }
 
+                const onDay = workouts.filter((workout) => workout.date === date)
+                const categories = CATEGORIES.filter((category) =>
+                    onDay.some((workout) => workout.category === category)
+                )
+
                 return (
                     <button
                         type="button"
@@ -107,11 +126,19 @@ function MonthGrid({ month, selectedDate, onSelect }) {
                             month: 'long',
                             day: 'numeric',
                             year: 'numeric',
-                        })}`}
+                        })}, ${onDay.length} workout${onDay.length === 1 ? '' : 's'}`}
                         onClick={() => onSelect(date)}
                     >
                         <span className="calendar-day-number">
                             {parseDate(date).getDate()}
+                        </span>
+                        <span className="calendar-day-dots" aria-hidden="true">
+                            {categories.map((category) => (
+                                <i
+                                    key={category}
+                                    style={{ background: categoryColor(category) }}
+                                />
+                            ))}
                         </span>
                     </button>
                 )
@@ -120,7 +147,11 @@ function MonthGrid({ month, selectedDate, onSelect }) {
     )
 }
 
-function SelectedDay({ date }) {
+function SelectedDay({ date, workouts }) {
+    const selectedWorkouts = workouts
+        .filter((workout) => workout.date === date)
+        .sort((a, b) => (a.time || '').localeCompare(b.time || ''))
+
     return (
         <section className="panel calendar-selected-day" aria-labelledby="selected-day-heading">
             <p className="calendar-eyebrow">Selected day</p>
@@ -131,17 +162,45 @@ function SelectedDay({ date }) {
                     year: 'numeric',
                 })}
             </h2>
+
+            {selectedWorkouts.length === 0 && (
+                <p className="empty-text">No workouts scheduled for this day.</p>
+            )}
+
+            <div className="calendar-workout-list">
+                {selectedWorkouts.map((workout) => (
+                    <article
+                        className="calendar-workout-card"
+                        key={workout.id || workout._id}
+                        style={{ borderLeftColor: categoryColor(workout.category) }}
+                    >
+                        <div className="calendar-workout-top">
+                            <h3>{workout.name}</h3>
+                            <span className="calendar-workout-status">
+                                {workout.completed ? 'Completed' : 'Planned'}
+                            </span>
+                        </div>
+                        <p>
+                            {formatTime(workout.time)} · {workout.durationMin} min
+                        </p>
+                        <span className="calendar-workout-category">
+                            {workout.category}
+                        </span>
+                    </article>
+                ))}
+            </div>
         </section>
     )
 }
 
-function CalendarPage({ onNavigate }) {
+function CalendarPage({ initialWorkouts = [], onNavigate }) {
     const today = localDateString()
     const [month, setMonth] = useState(() => {
         const date = new Date()
         return new Date(date.getFullYear(), date.getMonth(), 1)
     })
     const [selectedDate, setSelectedDate] = useState(today)
+    const workouts = initialWorkouts
 
     function changeMonth(amount) {
         const next = new Date(month.getFullYear(), month.getMonth() + amount, 1)
@@ -185,17 +244,26 @@ function CalendarPage({ onNavigate }) {
                     <MonthGrid
                         month={month}
                         selectedDate={selectedDate}
+                        workouts={workouts}
                         onSelect={selectDate}
                     />
 
                     <div className="calendar-footer">
+                        <ul className="calendar-legend" aria-label="Workout categories">
+                            {CATEGORIES.map((category) => (
+                                <li key={category}>
+                                    <i style={{ background: categoryColor(category) }} aria-hidden="true" />
+                                    {category}
+                                </li>
+                            ))}
+                        </ul>
                         <button type="button" className="calendar-link-button" onClick={goToToday}>
                             Today
                         </button>
                     </div>
                 </section>
 
-                <SelectedDay date={selectedDate} />
+                <SelectedDay date={selectedDate} workouts={workouts} />
             </div>
 
             <nav className="bottom-nav" aria-label="Main">

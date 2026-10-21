@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import LoginPage from './pages/LoginPage'
-import OverviewPage from './pages/OverviewPage'
+import OverviewPage from './pages/CalendarPage'
 
 function MyApp() {
     const [showOverview, setShowOverview] = useState(false)
