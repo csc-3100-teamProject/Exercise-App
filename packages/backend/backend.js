@@ -120,6 +120,15 @@ app.post('/users/:id/workouts', (req, res) => {
             }
         })
 })
+app.get('/users/:id/workouts', (req, res) => {
+    const id = req.params['id']
+    functions
+        .findWorkout(id)
+        .then((workouts) => {
+            res.status(200).json(workouts)
+        })
+        .catch(() => res.status(500).send('Unable to get workout'))
+})
 
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']

@@ -92,6 +92,10 @@ function findIdAndDestroy(id) {
     return userModel.findByIdAndDelete(id)
 }
 
+function findWorkout(userId) {
+    return workoutModel.find({ userId: userId })
+}
+
 export default {
     addUser,
     getUsers,
@@ -103,4 +107,5 @@ export default {
     loginCheck,
     getOverview,
     addWorkout,
+    findWorkout,
 }
