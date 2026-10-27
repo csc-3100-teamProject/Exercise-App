@@ -85,11 +85,15 @@ function MonthGrid({ month, selectedDate, workouts, onSelect }) {
     const cellCount = Math.ceil((firstDay + daysInMonth) / 7) * 7
     const today = localDateString()
 
-    const days = Array.from({ length: cellCount }, (_, index) => {
+    const days = []
+    for (let index = 0; index < cellCount; index++) {
         const day = index - firstDay + 1
-        if (day < 1 || day > daysInMonth) return null
-        return localDateString(new Date(year, monthIndex, day))
-    })
+        if (day < 1 || day > daysInMonth) {
+            days.push(null)
+        } else {
+            days.push(localDateString(new Date(year, monthIndex, day)))
+        }
+    }
 
     return (
         <div className="calendar-grid">
@@ -114,10 +118,14 @@ function MonthGrid({ month, selectedDate, workouts, onSelect }) {
                     onDay.some((workout) => workout.category === category)
                 )
 
+                let dayClass = 'calendar-day'
+                if (date === selectedDate) dayClass += ' calendar-day-selected'
+                if (date === today) dayClass += ' calendar-day-today'
+
                 return (
                     <button
                         type="button"
-                        className={`calendar-day${date === selectedDate ? ' calendar-day-selected' : ''}${date === today ? ' calendar-day-today' : ''}`}
+                        className={dayClass}
                         key={date}
                         aria-pressed={date === selectedDate}
                         aria-current={date === today ? 'date' : undefined}
@@ -147,7 +155,7 @@ function MonthGrid({ month, selectedDate, workouts, onSelect }) {
     )
 }
 
-function SelectedDay({ date, workouts }) {
+function SelectedDay({ date, workouts, onAdd, onEdit, onDelete, onToggle }) {
     const selectedWorkouts = workouts
         .filter((workout) => workout.date === date)
         .sort((a, b) => (a.time || '').localeCompare(b.time || ''))
@@ -164,7 +172,12 @@ function SelectedDay({ date, workouts }) {
             </h2>
 
             {selectedWorkouts.length === 0 && (
-                <p className="empty-text">No workouts scheduled for this day.</p>
+                <div>
+                    <p className="empty-text">No workouts scheduled for this day.</p>
+                    <button type="button" className="calendar-link-button calendar-empty-add" onClick={onAdd}>
+                        + Schedule workout
+                    </button>
+                </div>
             )}
 
             <div className="calendar-workout-list">
@@ -180,12 +193,24 @@ function SelectedDay({ date, workouts }) {
                                 {workout.completed ? 'Completed' : 'Planned'}
                             </span>
                         </div>
-                        <p>
-                            {formatTime(workout.time)} · {workout.durationMin} min
-                        </p>
-                        <span className="calendar-workout-category">
-                            {workout.category}
-                        </span>
+                        <p>{formatTime(workout.time)} · {workout.category}</p>
+                        <div className="calendar-workout-actions">
+                            <button
+                                type="button"
+                                className="calendar-complete-button"
+                                disabled={!workout.completed && workout.date > localDateString()}
+                                title={!workout.completed && workout.date > localDateString() ? 'Future workouts can be completed on their scheduled day.' : undefined}
+                                onClick={() => onToggle(workout.id || workout._id)}
+                            >
+                                {workout.completed ? 'Mark planned' : 'Mark complete'}
+                            </button>
+                            <button type="button" className="calendar-link-button" onClick={() => onEdit(workout)}>
+                                Edit
+                            </button>
+                            <button type="button" className="calendar-delete-button" onClick={() => onDelete(workout)}>
+                                Delete
+                            </button>
+                        </div>
                     </article>
                 ))}
             </div>
@@ -193,23 +218,141 @@ function SelectedDay({ date, workouts }) {
     )
 }
 
-function CalendarPage({ initialWorkouts = [], onNavigate }) {
+function ScheduleForm({ date, initialWorkout, onSave, onCancel }) {
+    const emptyWorkout = { name: '', category: 'Strength', date, time: '18:00' }
+    const [workout, setWorkout] = useState(initialWorkout || emptyWorkout)
+    const [errorMessage, setErrorMessage] = useState('')
+
+    function handleChange(event) {
+        const { name, value } = event.target
+        setWorkout({ ...workout, [name]: value })
+        setErrorMessage('')
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault()
+
+        if (!workout.name.trim()) {
+            setErrorMessage('Enter a workout name.')
+            return
+        }
+
+        const parsedDate = parseDate(workout.date)
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(workout.date) || localDateString(parsedDate) !== workout.date || workout.date < '1900-01-01' || workout.date > '2100-12-31') {
+            setErrorMessage('Choose a valid date between 1900 and 2100.')
+            return
+        }
+
+        if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(workout.time)) {
+            setErrorMessage('Choose a valid workout time.')
+            return
+        }
+
+        if (workout.completed && workout.date > localDateString()) {
+            setErrorMessage('Mark this workout planned before moving it to a future date.')
+            return
+        }
+
+        onSave({
+            ...workout,
+            name: workout.name.trim(),
+            completed: workout.completed || false,
+            exercises: workout.exercises || [],
+        })
+    }
+
+    return (
+        <section className="panel" id="calendar-schedule" aria-labelledby="schedule-heading">
+            <div className="calendar-panel-header">
+                <h2 id="schedule-heading">{initialWorkout ? 'Edit workout' : 'Schedule workout'}</h2>
+                <button type="button" className="calendar-link-button" onClick={onCancel}>
+                    Cancel
+                </button>
+            </div>
+
+            <form className="calendar-form" onSubmit={handleSubmit}>
+                <label htmlFor="workout-name">Workout name</label>
+                <input
+                    id="workout-name"
+                    name="name"
+                    value={workout.name}
+                    onChange={handleChange}
+                    placeholder="Upper Body Power"
+                    maxLength={80}
+                    autoFocus
+                    required
+                />
+
+                <label htmlFor="workout-category">Category</label>
+                <select
+                    id="workout-category"
+                    name="category"
+                    value={workout.category}
+                    onChange={handleChange}
+                >
+                    {CATEGORIES.map((category) => (
+                        <option key={category}>{category}</option>
+                    ))}
+                </select>
+
+                <label htmlFor="workout-date">Date</label>
+                <input
+                    id="workout-date"
+                    name="date"
+                    type="date"
+                    min="1900-01-01"
+                    max="2100-12-31"
+                    value={workout.date}
+                    onChange={handleChange}
+                    required
+                />
+
+                <label htmlFor="workout-time">Time</label>
+                <input
+                    id="workout-time"
+                    name="time"
+                    type="time"
+                    value={workout.time}
+                    onChange={handleChange}
+                    required
+                />
+
+                {errorMessage && (
+                    <p className="form-error" role="alert">{errorMessage}</p>
+                )}
+
+                <button type="submit" className="calendar-save-button">
+                    {initialWorkout ? 'Save changes' : 'Schedule workout'}
+                </button>
+            </form>
+        </section>
+    )
+}
+
+function CalendarPage({ workouts = [], onSaveWorkout, onDeleteWorkout, onToggleWorkout, onNavigate, storageError, startWithForm = false }) {
     const today = localDateString()
     const [month, setMonth] = useState(() => {
         const date = new Date()
         return new Date(date.getFullYear(), date.getMonth(), 1)
     })
     const [selectedDate, setSelectedDate] = useState(today)
-    const workouts = initialWorkouts
+    const [showForm, setShowForm] = useState(startWithForm)
+    const [editingWorkout, setEditingWorkout] = useState(null)
+    const [deletedWorkout, setDeletedWorkout] = useState(null)
+    const [successMessage, setSuccessMessage] = useState('')
 
     function changeMonth(amount) {
         const next = new Date(month.getFullYear(), month.getMonth() + amount, 1)
         setMonth(next)
         setSelectedDate(localDateString(next))
+        setSuccessMessage('')
+        setShowForm(false)
     }
 
     function selectDate(date) {
         setSelectedDate(date)
+        setSuccessMessage('')
+        setShowForm(false)
     }
 
     function goToToday() {
@@ -218,12 +361,82 @@ function CalendarPage({ initialWorkouts = [], onNavigate }) {
         selectDate(today)
     }
 
+    function openForm() {
+        setSuccessMessage('')
+        setEditingWorkout(null)
+        setShowForm(true)
+    }
+
+    function saveWorkout(workout) {
+        const date = parseDate(workout.date)
+
+        onSaveWorkout(workout)
+        setMonth(new Date(date.getFullYear(), date.getMonth(), 1))
+        setSelectedDate(workout.date)
+        setShowForm(false)
+        setEditingWorkout(null)
+        setSuccessMessage(`${workout.name} ${editingWorkout ? 'updated' : 'scheduled'}.`)
+    }
+
+    function editWorkout(workout) {
+        setEditingWorkout(workout)
+        setShowForm(true)
+        setSuccessMessage('')
+        window.scrollTo(0, 0)
+    }
+
+    function deleteWorkout(workout) {
+        onDeleteWorkout(workout.id || workout._id)
+        setDeletedWorkout(workout)
+        setShowForm(false)
+        setEditingWorkout(null)
+        setSuccessMessage(`${workout.name} deleted.`)
+    }
+
+    function undoDelete() {
+        onSaveWorkout(deletedWorkout)
+        const date = parseDate(deletedWorkout.date)
+        setMonth(new Date(date.getFullYear(), date.getMonth(), 1))
+        setSelectedDate(deletedWorkout.date)
+        setSuccessMessage(`${deletedWorkout.name} restored.`)
+        setDeletedWorkout(null)
+    }
+
+    function toggleWorkout(id) {
+        onToggleWorkout(id)
+        setShowForm(false)
+        setEditingWorkout(null)
+        setSuccessMessage('Workout status updated.')
+    }
+
     return (
         <main className="calendar-page">
             <div className="calendar-content">
                 <header className="calendar-header">
                     <h1>Calendar</h1>
+                    <button
+                        type="button"
+                        className="calendar-add-button"
+                        aria-label="Add workout"
+                        aria-expanded={showForm}
+                        aria-controls={showForm ? 'calendar-schedule' : undefined}
+                        onClick={openForm}
+                    >
+                        +
+                    </button>
                 </header>
+
+                {storageError && <p className="form-error" role="alert">{storageError}</p>}
+
+                {showForm && (
+                    <ScheduleForm
+                        key={editingWorkout ? editingWorkout.id || editingWorkout._id : 'new'}
+                        date={selectedDate}
+                        initialWorkout={editingWorkout}
+                        onSave={saveWorkout}
+                        onCancel={() => setShowForm(false)}
+                    />
+                )}
 
                 <section aria-label="Workout calendar">
                     <div className="calendar-month-header">
@@ -263,7 +476,25 @@ function CalendarPage({ initialWorkouts = [], onNavigate }) {
                     </div>
                 </section>
 
-                <SelectedDay date={selectedDate} workouts={workouts} />
+                {successMessage && (
+                    <p className="form-success" role="status">{successMessage}</p>
+                )}
+
+                {deletedWorkout && (
+                    <p className="calendar-undo">
+                        Deleted {deletedWorkout.name}.{' '}
+                        <button type="button" className="calendar-link-button" onClick={undoDelete}>Undo</button>
+                    </p>
+                )}
+
+                <SelectedDay
+                    date={selectedDate}
+                    workouts={workouts}
+                    onAdd={openForm}
+                    onEdit={editWorkout}
+                    onDelete={deleteWorkout}
+                    onToggle={toggleWorkout}
+                />
             </div>
 
             <nav className="bottom-nav" aria-label="Main">
@@ -273,7 +504,7 @@ function CalendarPage({ initialWorkouts = [], onNavigate }) {
                         type="button"
                         className={label === 'Calendar' ? 'nav-active' : ''}
                         aria-current={label === 'Calendar' ? 'page' : undefined}
-                        disabled={label !== 'Calendar' && (!onNavigate || label !== 'Overview')}
+                        disabled={!['Overview', 'Calendar', 'Progress'].includes(label)}
                         onClick={() => onNavigate?.(label.toLowerCase())}
                     >
                         <Icon name={icon} />
@@ -286,4 +517,3 @@ function CalendarPage({ initialWorkouts = [], onNavigate }) {
 }
 
 export default CalendarPage
-

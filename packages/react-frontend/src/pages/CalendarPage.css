@@ -392,7 +392,53 @@
 }
 
 .calendar-page .bottom-nav button:disabled {
+    opacity: 0.45;
     cursor: default;
+}
+
+/* Frontend storage and workout actions */
+.calendar-storage-note,
+.calendar-undo {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.calendar-page .calendar-empty-add {
+    margin-top: 16px;
+}
+
+.calendar-workout-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.calendar-page .calendar-complete-button {
+    padding: 9px 12px;
+    background: #1b260d;
+    color: var(--lime);
+    border: 1px solid #354329;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.calendar-page .calendar-complete-button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.calendar-page .calendar-delete-button {
+    padding: 0;
+    background: none;
+    color: #ff8b8b;
+    border: 0;
+    font-size: 13px;
 }
 
 @media (max-width: 380px) {
