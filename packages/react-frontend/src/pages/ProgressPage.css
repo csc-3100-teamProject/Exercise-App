@@ -1,0 +1,254 @@
+.progress-page {
+    --lime: #c6f35c;
+    --bg: #080a0d;
+    --panel: #12161b;
+    --border: #232a33;
+    --muted: #8b95a3;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 24px 20px 110px;
+    background: var(--bg);
+    color: #f5f7fa;
+    font-family:
+        Inter,
+        -apple-system,
+        'Segoe UI',
+        Arial,
+        sans-serif;
+}
+
+.progress-page h1,
+.progress-page h2,
+.progress-page h3,
+.progress-page p {
+    margin: 0;
+}
+
+.progress-page button {
+    font: inherit;
+    cursor: pointer;
+}
+
+.progress-page button:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 3px;
+}
+
+.progress-content {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* Header */
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-top: 12px;
+}
+
+.progress-header h1 {
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+}
+
+.progress-month {
+    color: var(--lime);
+    font-size: 12px;
+    text-align: right;
+}
+
+.progress-storage-note {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* Summary cards */
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.progress-stat,
+.progress-page .panel {
+    padding: 22px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+}
+
+.progress-stat p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.progress-stat strong {
+    display: block;
+    margin-top: 14px;
+    font-size: 30px;
+    letter-spacing: -0.5px;
+    overflow-wrap: anywhere;
+}
+
+.progress-stat span {
+    display: block;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.progress-page h2 {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.progress-page .empty-text {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Workout mix */
+.progress-mix-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 0;
+    margin: 24px 0 0;
+    list-style: none;
+}
+
+.progress-mix-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 9px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.progress-mix-label strong {
+    color: #f5f7fa;
+}
+
+.progress-mix-track {
+    height: 7px;
+    overflow: hidden;
+    background: #232a33;
+    border-radius: 8px;
+}
+
+.progress-mix-value {
+    height: 100%;
+    border-radius: 8px;
+}
+
+/* Completed workouts */
+.progress-activity {
+    padding: 0;
+    margin: 12px 0 0;
+    list-style: none;
+}
+
+.progress-activity li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 0;
+    font-size: 14px;
+}
+
+.progress-activity li > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.progress-activity li > span {
+    flex: none;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.progress-activity li + li {
+    border-top: 1px solid var(--border);
+}
+
+.progress-activity p {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.progress-page .form-error {
+    color: #ff8b8b;
+    font-size: 14px;
+}
+
+/* Bottom navigation */
+.progress-page .bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-around;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 12px 8px 18px;
+    background: rgba(10, 12, 15, 0.95);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+}
+
+.progress-page .bottom-nav button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 60px;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.progress-page .bottom-nav .nav-active {
+    color: var(--lime);
+}
+
+.progress-page .bottom-nav button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+@media (max-width: 380px) {
+    .progress-header h1 {
+        font-size: 26px;
+    }
+
+    .progress-stat {
+        padding: 18px 14px;
+    }
+
+    .progress-stat strong {
+        font-size: 25px;
+    }
+
+    .progress-page .bottom-nav button {
+        min-width: 0;
+        flex: 1;
+        font-size: 10px;
+    }
+}
