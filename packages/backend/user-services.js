@@ -4,6 +4,7 @@ import workoutModel from './workout.js'
 import { buildOverview } from './overview.js'
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 dotenv.config()
 
 mongoose.set('debug', true)

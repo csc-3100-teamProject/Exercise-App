@@ -153,3 +153,9 @@ export function buildOverview({ user, workouts, today, weeklyGoal = 5 }) {
         },
     }
 }
+
+export default {
+    toUtc,
+    toDateStr,
+    streaks,
+}
