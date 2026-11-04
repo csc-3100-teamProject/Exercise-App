@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './ProgressPage.css'
 
 const CATEGORIES = ['Strength', 'Cardio', 'Mobility']
@@ -114,7 +115,7 @@ function RecentWorkouts({ workouts }) {
 
     return (
         <section className="panel" aria-labelledby="completed-heading">
-            <h2 id="completed-heading">Completed this month</h2>
+            <h2 id="completed-heading">Completed workouts</h2>
             {recent.length === 0 && <p className="empty-text">Your completed workouts will appear here.</p>}
             <ul className="progress-activity">
                 {recent.map((workout) => (
@@ -123,7 +124,9 @@ function RecentWorkouts({ workouts }) {
                             <strong>{workout.name}</strong>
                             <p>{parseDate(workout.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · {workout.category}</p>
                         </div>
-                        <span>{workout.durationMin} min</span>
+                        {Number.isFinite(workout.durationMin) && workout.durationMin > 0 && (
+                            <span>{workout.durationMin} min</span>
+                        )}
                     </li>
                 ))}
             </ul>
@@ -132,28 +135,44 @@ function RecentWorkouts({ workouts }) {
 }
 
 function ProgressPage({ workouts = [], onNavigate, storageError }) {
+    const [currentDate, setCurrentDate] = useState(new Date())
     const today = localDateString()
-    const month = today.slice(0, 7)
+    const month = localDateString(currentDate).slice(0, 7)
+    const isCurrentMonth = month === today.slice(0, 7)
+    const monthName = currentDate.toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric'
+    })
     const completed = workouts.filter((workout) => workout.completed && workout.date <= today && workout.date.slice(0, 7) === month)
-    const minutes = completed.reduce((sum, workout) => sum + workout.durationMin, 0)
+    const timedWorkouts = completed.filter((workout) => Number.isFinite(workout.durationMin) && workout.durationMin > 0)
+    const minutes = timedWorkouts.reduce((sum, workout) => sum + workout.durationMin, 0)
     const activeDays = new Set(completed.map((workout) => workout.date)).size
     const weightedExercises = completed.flatMap((workout) => workout.exercises || [])
         .filter((exercise) => exercise && exercise.weight > 0 && exercise.sets > 0 && exercise.reps > 0)
     const volume = weightedExercises.reduce((sum, exercise) => sum + exercise.sets * exercise.reps * exercise.weight, 0)
+
+    function changeMonth(amount) {
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + amount, 1))
+    }
 
     return (
         <main className="progress-page">
             <div className="progress-content">
                 <header className="progress-header">
                     <h1>Progress</h1>
-                    <span className="progress-month">{parseDate(today).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                    <span className="progress-month" aria-live="polite">{monthName}</span>
                 </header>
-                <p className="progress-storage-note">This month · Completed workouts saved on this device.</p>
+                <div className="progress-month-controls">
+                    <button type="button" onClick={() => changeMonth(-1)}>‹ Previous</button>
+                    <button type="button" disabled={isCurrentMonth} onClick={() => setCurrentDate(new Date())}>This month</button>
+                    <button type="button" disabled={isCurrentMonth} onClick={() => changeMonth(1)}>Next ›</button>
+                </div>
+                <p className="progress-storage-note">Completed workouts in the selected month.</p>
                 {storageError && <p className="form-error" role="alert">{storageError}</p>}
 
                 <section className="progress-stats" aria-label="Monthly training summary">
                     <StatCard label="Workouts" value={completed.length} description="Completed sessions" />
-                    <StatCard label="Training time" value={`${(minutes / 60).toFixed(1)} h`} description={`${minutes} minutes total`} />
+                    <StatCard label="Logged time" value={timedWorkouts.length ? `${(minutes / 60).toFixed(1)} h` : '—'} description={timedWorkouts.length ? `${minutes} recorded minutes` : 'No duration recorded'} />
                     <StatCard label="Training days" value={activeDays} description="Days with a completed workout" />
                     <StatCard label="Total volume" value={weightedExercises.length ? `${volume.toLocaleString()} lb` : '—'} description="Sets × reps × weight, when logged" />
                 </section>

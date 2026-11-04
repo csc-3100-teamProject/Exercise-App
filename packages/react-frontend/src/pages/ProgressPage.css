@@ -63,6 +63,26 @@
     text-align: right;
 }
 
+.progress-month-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.progress-month-controls button {
+    padding: 10px 12px;
+    background: var(--panel);
+    color: var(--lime);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.progress-month-controls button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
 .progress-storage-note {
     color: var(--muted);
     font-size: 12px;
