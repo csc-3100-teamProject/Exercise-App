@@ -24,7 +24,8 @@ function readWorkouts(storageKey) {
             typeof workout.name === 'string' && workout.name.trim() !== '' &&
             ['Strength', 'Cardio', 'Mobility'].includes(workout.category) &&
             /^\d{4}-\d{2}-\d{2}$/.test(workout.date) &&
-            Number.isInteger(workout.durationMin) && workout.durationMin > 0 && workout.durationMin <= 1440 &&
+            (workout.durationMin === undefined ||
+                (Number.isInteger(workout.durationMin) && workout.durationMin >= 0 && workout.durationMin <= 1440)) &&
             typeof workout.completed === 'boolean' &&
             (workout.exercises === undefined || Array.isArray(workout.exercises))
         )) {

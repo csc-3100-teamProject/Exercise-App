@@ -137,6 +137,69 @@
     line-height: 1.6;
 }
 
+/* Activity chart and section controls */
+.progress-section-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.progress-page .progress-link {
+    padding: 10px 0;
+    background: none;
+    border: 0;
+    color: var(--lime);
+    font-size: 12px;
+}
+
+.progress-page .progress-panel-note {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.progress-chart {
+    display: flex;
+    gap: 10px;
+    height: 160px;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.progress-chart li {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.progress-chart strong {
+    color: #f5f7fa;
+}
+
+.progress-bar-wrap {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.progress-bar {
+    width: 70%;
+    max-width: 32px;
+    background: var(--lime);
+    border-radius: 6px 6px 0 0;
+}
+
 /* Workout mix */
 .progress-mix-list {
     display: flex;
