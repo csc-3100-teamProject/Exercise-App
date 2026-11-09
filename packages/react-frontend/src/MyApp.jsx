@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage'
 import OverviewPage from './pages/OverviewPage'
 import CalendarPage from './pages/CalendarPage'
 import ProgressPage from './pages/ProgressPage'
+import ProfilePage from './pages/ProfilePage'
 
 const devUser =
     import.meta.env.DEV && import.meta.env.VITE_DEV_USER_ID
@@ -37,14 +38,14 @@ function readWorkouts(storageKey) {
 }
 
 // This component remounts for a different user so local histories stay separate.
-function UserPages({ user }) {
+function UserPages({ user, onLogout }) {
     const storageKey = `formflow-workouts-${user.id}`
     const [calendar, setCalendar] = useState(() => readWorkouts(storageKey))
     const [currentPage, setCurrentPage] = useState('overview')
     const [showCalendarForm, setShowCalendarForm] = useState(false)
 
     function navigate(page) {
-        if (!['overview', 'calendar', 'progress'].includes(page)) return
+        if (!['overview', 'calendar', 'progress', 'profile'].includes(page)) return
         setCurrentPage(page)
         setShowCalendarForm(false)
         window.scrollTo(0, 0)
@@ -106,6 +107,15 @@ function UserPages({ user }) {
     if (currentPage === 'progress') {
         return <ProgressPage workouts={calendar.workouts} onNavigate={navigate} storageError={calendar.error} />
     }
+    if (currentPage === 'profile') {
+        return (
+            <ProfilePage
+                user={user}
+                onNavigate={navigate}
+                onLogout={() => onLogout()}
+            />
+        )
+    }
 
     return <OverviewPage user={user} onNavigate={navigate} onAdd={openCalendarForm} />
 }
@@ -115,7 +125,7 @@ function MyApp() {
 
     if (!user) return <LoginPage onLogin={setUser} />
 
-    return <UserPages key={user.id} user={user} />
+    return <UserPages key={user.id} user={user} onLogout={() => setUser(null)} />
 }
 
 export default MyApp

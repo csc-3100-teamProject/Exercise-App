@@ -437,9 +437,7 @@ function OverviewPage({ user, onStart, onAdd, onNavigate }) {
                         className={label === 'Overview' ? 'nav-active' : ''}
                         aria-current={label === 'Overview' ? 'page' : undefined}
 			onClick={() => {
-                		if (label === 'Calendar') {
-                    			onNavigate('calendar')
-                		}
+                		onNavigate(label.toLowerCase())
             		}}
                     >
                         <Icon name={icon} />

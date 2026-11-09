@@ -1,0 +1,273 @@
+
+/* Page background */
+
+body:has(.profile-page),
+#root:has(.profile-page) {
+    margin: 0;
+    min-height: 100vh;
+    background: #090c0f;
+}
+
+/* Main profile page */
+
+.profile-page {
+    width: 100%;
+    max-width: 600px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 28px 24px 110px;
+    box-sizing: border-box;
+    background: #090c0f;
+    color: #f3f4f6;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.profile-page * {
+    box-sizing: border-box;
+}
+
+.profile-page button,
+.profile-page input {
+    font-family: inherit;
+}
+
+.profile-content {
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Page title */
+
+.profile-content h1 {
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0 0 32px;
+    color: #f3f4f6;
+}
+
+/* Profile header */
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.profile-avatar {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background: #c5fa55;
+    color: #090c0f;
+    font-size: 36px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.profile-header h2 {
+    font-size: 23px;
+    font-weight: 600;
+    margin: 0;
+    color: #f3f4f6;
+}
+
+.profile-header p {
+    font-size: 14px;
+    color: #929ba8;
+    margin: 7px 0 0;
+}
+
+/* Personal information card */
+
+.profile-card {
+    width: 100%;
+    background: #13181e;
+    border: 1px solid #29323d;
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.profile-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.profile-card-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #f3f4f6;
+}
+
+.profile-card-header button {
+    background: none;
+    border: none;
+    color: #c5fa55;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Form fields */
+
+.profile-card label {
+    display: block;
+    font-size: 14px;
+    color: #929ba8;
+    margin: 16px 0 8px;
+}
+
+.profile-card input {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border-radius: 11px;
+    border: 1px solid #29323d;
+    background: #20262d;
+    color: #f3f4f6;
+    font-size: 15px;
+    outline: none;
+}
+
+.profile-card input:disabled {
+    opacity: 1;
+    color: #b5bdc8;
+    -webkit-text-fill-color: #b5bdc8;
+}
+
+.profile-card input:not(:disabled):focus {
+    border-color: #c5fa55;
+}
+
+/* Save button */
+
+.profile-save {
+    width: 100%;
+    background: #c5fa55;
+    color: #090c0f;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.profile-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Logout button */
+
+.profile-logout {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    background: #13181e;
+    color: #fb8589;
+    border: 1px solid #29323d;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.profile-logout:hover {
+    background: #1b222a;
+}
+
+/* Messages */
+
+.profile-error {
+    color: #fb8589;
+    font-size: 14px;
+    margin-top: 14px;
+}
+
+.profile-success {
+    color: #c5fa55;
+    font-size: 14px;
+    margin-top: 14px;
+}
+
+/* Bottom navigation */
+
+.profile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    padding: 16px 8px max(16px, env(safe-area-inset-bottom));
+    background: #090c0f;
+    border-top: 1px solid #29323d;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+.profile-nav button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: none;
+    color: #929ba8;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.profile-nav button svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+}
+
+.profile-nav button.active {
+    color: #c5fa55;
+}
+
+/* Small screens */
+
+@media (max-width: 480px) {
+    .profile-page {
+        padding: 24px 18px 105px;
+    }
+
+    .profile-card {
+        padding: 18px;
+    }
+
+    .profile-content h1 {
+        font-size: 27px;
+    }
+
+    .profile-nav button {
+        font-size: 10px;
+    }
+}
+

@@ -97,6 +97,19 @@ function findWorkout(userId) {
     return workoutModel.find({ userId: userId })
 }
 
+async function getProfile(id) {
+    const user = await userModel.findById(id).select('username email')
+    return user
+}
+
+async function updateProfile(id, updates) {
+    return userModel.findByIdAndUpdate(
+        id,
+        { $set: updates },
+        { new: true, runValidators: true }
+    ).select('username email')
+}
+
 export default {
     addUser,
     getUsers,
@@ -109,4 +122,6 @@ export default {
     getOverview,
     addWorkout,
     findWorkout,
+    getProfile,
+    updateProfile,
 }

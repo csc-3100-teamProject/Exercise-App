@@ -130,6 +130,54 @@ app.get('/users/:id/workouts', (req, res) => {
         .catch(() => res.status(500).send('Unable to get workout'))
 })
 
+app.get('/users/:id/profile', (req, res) => {
+    const id = req.params.id
+
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(404).send('User not found')
+    }
+
+    functions.getProfile(id)
+        .then((user) => {
+            if (user) res.status(200).json(user)
+            else res.status(404).send('User not found')
+        })
+        .catch((error) => {
+            res.status(500).send(error.name)
+        })
+})
+
+app.patch('/users/:id/profile', (req, res) => {
+    const id = req.params.id
+    const { username, email } = req.body ?? {}
+
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(404).send('User not found')
+    }
+
+    if (!isNonEmptyString(username) || !isNonEmptyString(email)) {
+        return res.status(400).send('Username and email are required')
+    }
+
+    functions.updateProfile(id, {
+        username: username.trim(),
+        email: email.trim()
+    })
+        .then((user) => {
+            if (user) res.status(200).json(user)
+            else res.status(404).send('User not found')
+        })
+        .catch((error) => {
+            if (error.code === 11000) {
+                res.status(409).send('Username or email already exists')
+            } else if (error.name === 'ValidationError') {
+                res.status(400).send(error.message)
+            } else {
+                res.status(500).send(error.name)
+            }
+        })
+})
+
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']
     functions
