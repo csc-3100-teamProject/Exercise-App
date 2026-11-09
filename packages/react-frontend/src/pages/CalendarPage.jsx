@@ -98,7 +98,13 @@ function CalendarPage({ workouts = [], onSaveWorkout, onDeleteWorkout, onToggleW
             setError('Mark this workout planned before moving it to a future date.')
             return
         }
-        onSaveWorkout({ ...form, name: form.name.trim(), completed: form.completed || false, exercises: form.exercises || [] })
+        const duration = form.durationMin ? Number(form.durationMin) : undefined
+        if (duration !== undefined &&
+            (!Number.isInteger(duration) || duration < 1 || duration > 1440)) {
+            setError('Enter a duration between 1 and 1440 minutes, or leave it blank.')
+            return
+        }
+        onSaveWorkout({ ...form, name: form.name.trim(), durationMin: duration, completed: form.completed || false, exercises: form.exercises || [] })
         setCurrentDate(new Date(date.getFullYear(), date.getMonth(), 1))
         setSelectedDate(date)
         setShowForm(false)
@@ -150,6 +156,18 @@ function CalendarPage({ workouts = [], onSaveWorkout, onDeleteWorkout, onToggleW
                         <input id="workout-date" type="date" name="date" value={form.date} onChange={handleChange} min="1900-01-01" max="2100-12-31" required />
                         <label htmlFor="workout-time">Time</label>
                         <input id="workout-time" type="time" name="time" value={form.time} onChange={handleChange} required />
+                        <label htmlFor="workout-duration">Duration (minutes, optional)</label>
+                        <input
+                            id="workout-duration"
+                            type="number"
+                            name="durationMin"
+                            min="1"
+                            max="1440"
+                            step="1"
+                            value={form.durationMin || ''}
+                            onChange={handleChange}
+                            placeholder="Leave blank if unknown"
+                        />
                         {error && <p className="calendar-error" role="alert">{error}</p>}
                         <div className="calendar-actions">
                             <button type="submit" className="calendar-save">{editing ? 'Save changes' : 'Schedule workout'}</button>
