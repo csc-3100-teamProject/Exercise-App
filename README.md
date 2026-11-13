@@ -19,3 +19,5 @@ and for IntellJi follow: https://www.jetbrains.com/help/idea/prettier.html#prett
 Figma Link: https://www.figma.com/design/jAqtuf2LdNPl0aFrx7bWu9/Workout-Planner...?node-id=16-8&t=e4mua9m2qi1CbeiV-1
 
 For MongoDB, make sure to run npm install dotenv on local machine if you haven't yet.
+
+[![CI Testing](https://github.com/csc-3100-teamProject/Exercise-App/actions/workflows/node.js.yml/badge.svg)](https://github.com/csc-3100-teamProject/Exercise-App/actions/workflows/node.js.yml)
