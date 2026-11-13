@@ -1,6 +1,6 @@
 import functions from './overview.js'
 import { addDays, weekStart } from './overview.js'
-import { beforeEach, expect, test, jest } from '@jest/globals'
+import {  expect, test} from '@jest/globals'
 
 test('Testing toUTC', () => {
     const result = functions.toUtc('2026-11-2')
