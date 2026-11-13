@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import './CalendarPage.css'
 
@@ -490,7 +491,6 @@ function CalendarPage({
                         type="button"
                         className={label === 'Calendar' ? 'nav-active' : ''}
                         aria-current={label === 'Calendar' ? 'page' : undefined}
-                        disabled={label === 'Routines'}
                         onClick={() => onNavigate?.(label.toLowerCase())}
                     >
                         <Icon name={icon} />

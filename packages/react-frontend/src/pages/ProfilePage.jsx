@@ -206,7 +206,6 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                         type="button"
                         className={label === 'Profile' ? 'nav-active' : ''}
                         aria-current={label === 'Profile' ? 'page' : undefined}
-                        disabled={label === 'Routines'}
                         onClick={() => onNavigate?.(label.toLowerCase())}
                     >
                         <Icon name={icon} />

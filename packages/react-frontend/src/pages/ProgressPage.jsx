@@ -291,7 +291,6 @@ function ProgressPage({ workouts = [], onNavigate, storageError }) {
                         type="button"
                         className={label === 'Progress' ? 'nav-active' : ''}
                         aria-current={label === 'Progress' ? 'page' : undefined}
-                        disabled={!['Overview', 'Calendar', 'Progress'].includes(label)}
                         onClick={() => onNavigate?.(label.toLowerCase())}
                     >
                         <Icon name={icon} />
