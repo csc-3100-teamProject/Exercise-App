@@ -4,6 +4,55 @@ import './ProfilePage.css'
 
 const API = 'http://localhost:8000'
 
+const NAV_ITEMS = [
+    ['home', 'Overview'],
+    ['calendar', 'Calendar'],
+    ['routines', 'Routines'],
+    ['progress', 'Progress'],
+    ['profile', 'Profile'],
+]
+
+function Icon({ name }) {
+    const paths = {
+        home: <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+        calendar: (
+            <>
+                <rect x="3" y="4" width="18" height="17" rx="2" />
+                <path d="M3 9h18M8 2v4M16 2v4" />
+            </>
+        ),
+        routines: (
+            <>
+                <rect x="4" y="3" width="16" height="18" rx="2" />
+                <path d="M8 8h8M8 12h8M8 16h5" />
+            </>
+        ),
+        progress: <path d="M4 20V10M9 20V4M14 20v-8M19 20V8M2 20h20" />,
+        profile: (
+            <>
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 21a8 8 0 0 1 16 0" />
+            </>
+        ),
+    }
+
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {paths[name]}
+        </svg>
+    )
+}
+
 function ProfilePage({ user, onNavigate, onLogout }) {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
@@ -73,9 +122,13 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                             <p>{email}</p>
                         </div>
 
-                        <form className="profile-card" onSubmit={saveProfile}>
+                        <form
+                            className="profile-card"
+                            onSubmit={saveProfile}
+                        >
                             <div className="profile-card-header">
                                 <h2>Personal information</h2>
+
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -87,7 +140,10 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                                 </button>
                             </div>
 
-                            <label htmlFor="profile-username">Username</label>
+                            <label htmlFor="profile-username">
+                                Username
+                            </label>
+
                             <input
                                 id="profile-username"
                                 value={username}
@@ -96,7 +152,10 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                                 required
                             />
 
-                            <label htmlFor="profile-email">Email</label>
+                            <label htmlFor="profile-email">
+                                Email
+                            </label>
+
                             <input
                                 id="profile-email"
                                 type="email"
@@ -117,24 +176,41 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                             )}
                         </form>
 
-                        {error && <p className="profile-error" role="alert">{error}</p>}
-                        {message && <p className="profile-success">{message}</p>}
+                        {error && (
+                            <p className="profile-error" role="alert">
+                                {error}
+                            </p>
+                        )}
 
-                        <button className="profile-logout" onClick={onLogout}>
+                        {message && (
+                            <p className="profile-success">
+                                {message}
+                            </p>
+                        )}
+
+                        <button
+                            className="profile-logout"
+                            type="button"
+                            onClick={onLogout}
+                        >
                             Log out
                         </button>
                     </>
                 )}
             </div>
 
-            <nav className="profile-nav">
-                {['Overview', 'Calendar', 'Routines', 'Progress', 'Profile'].map((page) => (
+            <nav className="profile-nav" aria-label="Main">
+                {NAV_ITEMS.map(([icon, label]) => (
                     <button
-                        key={page}
-                        className={page === 'Profile' ? 'active' : ''}
-                        onClick={() => onNavigate(page.toLowerCase())}
+                        key={label}
+                        type="button"
+                        className={label === 'Profile' ? 'nav-active' : ''}
+                        aria-current={label === 'Profile' ? 'page' : undefined}
+                        disabled={label === 'Routines'}
+                        onClick={() => onNavigate?.(label.toLowerCase())}
                     >
-                        {page}
+                        <Icon name={icon} />
+                        <span>{label}</span>
                     </button>
                 ))}
             </nav>

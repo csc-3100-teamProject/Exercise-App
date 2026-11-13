@@ -203,40 +203,43 @@ body:has(.profile-page),
     margin-top: 14px;
 }
 
+
 /* Bottom navigation */
 
 .profile-nav {
     position: fixed;
+    left: 0;
+    right: 0;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 600px;
-    padding: 16px 8px max(16px, env(safe-area-inset-bottom));
-    background: #090c0f;
-    border-top: 1px solid #29323d;
+    z-index: 100;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 12px 8px 18px;
     box-sizing: border-box;
-    z-index: 100;
+    background: rgba(10, 12, 15, 0.95);
+    border-top: 1px solid #232a33;
+    backdrop-filter: blur(12px);
 }
 
 .profile-nav button {
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    flex: 1;
+    gap: 6px;
     min-width: 0;
+    padding: 0;
     background: none;
-    border: none;
-    color: #929ba8;
-    font-size: 12px;
-    font-weight: 500;
+    border: 0;
+    color: #8b95a3;
+    font-size: 11px;
+    font-weight: 400;
     cursor: pointer;
-    padding: 4px 0;
 }
 
 .profile-nav button svg {
@@ -247,9 +250,11 @@ body:has(.profile-page),
     stroke: currentColor;
 }
 
-.profile-nav button.active {
-    color: #c5fa55;
+.profile-nav button.active,
+.profile-nav button.nav-active {
+    color: #c6f35c;
 }
+
 
 /* Small screens */
 
@@ -269,5 +274,49 @@ body:has(.profile-page),
     .profile-nav button {
         font-size: 10px;
     }
+}
+
+
+/* Match Overview navigation exactly */
+
+.calendar-page .bottom-nav,
+.profile-page .profile-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-width: 520px;
+    height: auto;
+    min-height: 0;
+    margin: 0 auto;
+    padding: 12px 8px 18px;
+    box-sizing: content-box;
+    display: flex;
+    justify-content: space-around;
+    align-items: normal;
+    background: rgba(10, 12, 15, 0.95);
+    border-top: 1px solid #232a33;
+    backdrop-filter: blur(12px);
+}
+
+.calendar-page .bottom-nav button,
+.profile-page .profile-nav button {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: normal;
+    gap: 6px;
+    min-width: 60px;
+    padding: 0;
+    font-size: 11px;
+    line-height: normal;
+}
+
+.calendar-page .bottom-nav button svg,
+.profile-page .profile-nav button svg {
+    width: 24px;
+    height: 24px;
 }
 

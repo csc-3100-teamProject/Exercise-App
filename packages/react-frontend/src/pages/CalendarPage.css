@@ -297,3 +297,107 @@
         flex-wrap: wrap;
     }
 }
+
+/* Bottom navigation */
+
+.calendar-page {
+    padding-bottom: 110px;
+}
+
+.calendar-page .bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 12px 8px 18px;
+    box-sizing: border-box;
+    background: rgba(10, 12, 15, 0.95);
+    border-top: 1px solid #232a33;
+    backdrop-filter: blur(12px);
+}
+
+.calendar-page .bottom-nav button {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: #8b95a3;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.calendar-page .bottom-nav button svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+}
+
+.calendar-page .bottom-nav .nav-active {
+    color: #c6f35c;
+}
+
+@media (max-width: 380px) {
+    .calendar-page .bottom-nav button {
+        font-size: 10px;
+    }
+}
+
+
+/* Match Overview navigation exactly */
+
+.calendar-page .bottom-nav,
+.profile-page .profile-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-width: 520px;
+    height: auto;
+    min-height: 0;
+    margin: 0 auto;
+    padding: 12px 8px 18px;
+    box-sizing: content-box;
+    display: flex;
+    justify-content: space-around;
+    align-items: normal;
+    background: rgba(10, 12, 15, 0.95);
+    border-top: 1px solid #232a33;
+    backdrop-filter: blur(12px);
+}
+
+.calendar-page .bottom-nav button,
+.profile-page .profile-nav button {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: normal;
+    gap: 6px;
+    min-width: 60px;
+    padding: 0;
+    font-size: 11px;
+    line-height: normal;
+}
+
+.calendar-page .bottom-nav button svg,
+.profile-page .profile-nav button svg {
+    width: 24px;
+    height: 24px;
+}
+
