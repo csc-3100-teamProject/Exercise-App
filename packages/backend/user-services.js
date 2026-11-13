@@ -5,7 +5,7 @@ import { buildOverview } from './overview.js'
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
 dotenv.config()
-
+import jwt from 'jsonwebtoken'
 mongoose.set('debug', true)
 
 // Tests connect to their own in-memory database instead.
