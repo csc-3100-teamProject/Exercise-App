@@ -11,7 +11,8 @@
         "testBackendCoverage": "npm --prefix packages/backend run testCoverage",
         "format": "npx prettier --write .",
         "dev": "concurrently \"npm --prefix packages/backend run dev\" \"npm --prefix packages/react-frontend run dev\"",
-        "lint": "npx eslint ."
+        "lint": "npx eslint . && prettier --write",
+        "test": "npm --prefix packages/backend run test"
     },
     "workspaces": [
         "packages/*"
