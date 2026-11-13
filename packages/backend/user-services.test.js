@@ -2,7 +2,17 @@ import User from './user.js'
 import mockingoose from 'mockingoose'
 import functions from './user-services.js'
 import workout from './workout.js'
-import { beforeEach, expect, test, jest } from '@jest/globals'
+import {
+    beforeEach,
+    afterEach,
+    afterAll,
+    expect,
+    test,
+    jest,
+    describe,
+} from '@jest/globals'
+
+let mongoServer
 
 beforeEach(async () => {
     jest.clearAllMocks()
@@ -219,6 +229,7 @@ test('Testing addWorkout with valid workout', async () => {
     expect(result).not.toBeNull()
     expect(result.name).toBe('Leg Day')
 })
+
 //Testing findWorkout
 test('Testing findWorkout returns workout', async () => {
     const userId = '68fa1b2c3d4e5f6789012345'

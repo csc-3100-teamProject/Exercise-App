@@ -27,6 +27,53 @@ function getUsers(username, email) {
     return promise
 }
 
+async function registerUser(user) {
+    const finduser = await findUserByUsername(user.username)
+    const findemail = await findUserByEmail(user.email)
+
+    if (finduser || findemail) {
+        return null
+    }
+    const hashedPassword = await bcrypt.hash(user.password, 12)
+
+    const newUser = await new userModel({
+        username: user.username,
+        email: user.email,
+        password: hashedPassword,
+    }).save()
+
+    return {
+        user: newUser,
+        token: generateAccessToken(newUser),
+    }
+}
+
+function generateAccessToken(user) {
+    return jwt.sign(
+        { id: user._id.toString(), username: user.username },
+        process.env.TOKEN_SECRET,
+        { expiresIn: '1d' }
+    )
+}
+
+function authenticateUser(req, res, next) {
+    const authHeader = req.headers.authorization
+    const token = authHeader?.split(' ')[1]
+
+    if (!token) {
+        return res.status(401).send('Authentication token required')
+    }
+
+    jwt.verify(token, process.env.TOKEN_SECRET, (error, decoded) => {
+        if (error) {
+            return res.status(401).send('Invalid or expired token')
+        }
+
+        req.user = decoded
+        next()
+    })
+}
+
 async function addUser(user) {
     const finduser = await findUserByUsername(user.username)
     const findemail = await findUserByEmail(user.email)
@@ -43,12 +90,15 @@ async function addUser(user) {
 }
 
 async function loginCheck(email, password) {
-    const findEmail = await findUserByEmail(email)
-    if (findEmail) {
-        const passwordCheck = await bcrypt.compare(password, findEmail.password)
-        if (passwordCheck) return findEmail
+    const user = await findUserByEmail(email)
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+        return 404
     }
-    return 404
+
+    return {
+        user,
+        token: generateAccessToken(user),
+    }
 }
 
 async function getOverview(id, today) {
@@ -103,16 +153,20 @@ async function getProfile(id) {
 }
 
 async function updateProfile(id, updates) {
-    return userModel.findByIdAndUpdate(
-        id,
-        { $set: updates },
-        { new: true, runValidators: true }
-    ).select('username email')
+    return userModel
+        .findByIdAndUpdate(
+            id,
+            { $set: updates },
+            { new: true, runValidators: true }
+        )
+        .select('username email')
 }
 
 export default {
-    addUser,
     getUsers,
+    registerUser,
+    authenticateUser,
+    addUser,
     findUserById,
     findUserByUsername,
     findUserByUsernameAndEmail,

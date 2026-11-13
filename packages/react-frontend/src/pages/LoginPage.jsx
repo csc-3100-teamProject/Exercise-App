@@ -58,7 +58,7 @@ function LoginPage({ onLogin }) {
                     throw new Error('Fill in every field and try again.')
                 }
 
-                if (response.status !== 200) {
+                if (response.status !== 200 && response.status !== 201) {
                     throw new Error('The request failed. Please try again.')
                 }
 

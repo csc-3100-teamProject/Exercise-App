@@ -51,10 +51,21 @@ app.post('/users', (req, res) => {
         return res.status(400).send('username, email and password are required')
     }
     functions
-        .addUser({ username, email, password })
+        .registerUser({
+            username: username.trim(),
+            email: email.trim(),
+            password,
+        })
         .then((result) => {
-            if (result !== 409) res.status(200).send()
-            else res.status(409).send()
+            if (!result) {
+                return res.status(409).send('Username or email already exists')
+            }
+
+            res.status(201).json({
+                token: result.token,
+                id: result.user._id,
+                username: result.user.username,
+            })
         })
         .catch((error) => {
             res.status(500).send(error.name)
@@ -69,12 +80,15 @@ app.post('/auth/login', (req, res) => {
     functions
         .loginCheck(email.trim(), password)
         .then((result) => {
-            if (result !== 404)
-                res.status(200).send({
-                    id: result._id,
-                    username: result.username,
-                })
-            else res.status(404).send()
+            if (result === 404) {
+                return res.status(401).send('Invalid email or password')
+            }
+
+            res.status(200).json({
+                token: result.token,
+                id: result.user._id,
+                username: result.user.username,
+            })
         })
         .catch((error) => {
             res.status(500).send(error.name)
@@ -137,7 +151,8 @@ app.get('/users/:id/profile', (req, res) => {
         return res.status(404).send('User not found')
     }
 
-    functions.getProfile(id)
+    functions
+        .getProfile(id)
         .then((user) => {
             if (user) res.status(200).json(user)
             else res.status(404).send('User not found')
@@ -159,10 +174,11 @@ app.patch('/users/:id/profile', (req, res) => {
         return res.status(400).send('Username and email are required')
     }
 
-    functions.updateProfile(id, {
-        username: username.trim(),
-        email: email.trim()
-    })
+    functions
+        .updateProfile(id, {
+            username: username.trim(),
+            email: email.trim(),
+        })
         .then((user) => {
             if (user) res.status(200).json(user)
             else res.status(404).send('User not found')
