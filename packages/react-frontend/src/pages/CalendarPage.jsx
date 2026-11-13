@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import './CalendarPage.css'
 
@@ -181,7 +180,6 @@ function CalendarPage({
             setError('Mark this workout planned before moving it to a future date.')
             return
         }
-<<<<<<< HEAD
         const duration = form.durationMin ? Number(form.durationMin) : undefined
         if (duration !== undefined &&
             (!Number.isInteger(duration) || duration < 1 || duration > 1440)) {
@@ -189,16 +187,6 @@ function CalendarPage({
             return
         }
         onSaveWorkout({ ...form, name: form.name.trim(), durationMin: duration, completed: form.completed || false, exercises: form.exercises || [] })
-=======
-
-        onSaveWorkout({
-            ...form,
-            name: form.name.trim(),
-            completed: form.completed || false,
-            exercises: form.exercises || []
-        })
-
->>>>>>> 2f74c8a965c53042eb83e417b2bdb82254f27438
         setCurrentDate(new Date(date.getFullYear(), date.getMonth(), 1))
         setSelectedDate(date)
         setShowForm(false)
@@ -290,22 +278,6 @@ function CalendarPage({
                         />
 
                         <label htmlFor="workout-time">Time</label>
-<<<<<<< HEAD
-                        <input id="workout-time" type="time" name="time" value={form.time} onChange={handleChange} required />
-                        <label htmlFor="workout-duration">Duration (minutes, optional)</label>
-                        <input
-                            id="workout-duration"
-                            type="number"
-                            name="durationMin"
-                            min="1"
-                            max="1440"
-                            step="1"
-                            value={form.durationMin || ''}
-                            onChange={handleChange}
-                            placeholder="Leave blank if unknown"
-                        />
-                        {error && <p className="calendar-error" role="alert">{error}</p>}
-=======
                         <input
                             id="workout-time"
                             type="time"
@@ -321,7 +293,6 @@ function CalendarPage({
                             </p>
                         )}
 
->>>>>>> 2f74c8a965c53042eb83e417b2bdb82254f27438
                         <div className="calendar-actions">
                             <button type="submit" className="calendar-save">
                                 {editing ? 'Save changes' : 'Schedule workout'}
