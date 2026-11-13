@@ -110,7 +110,8 @@ async function getOverview(id, today) {
 async function addWorkout(userId, workout) {
     const user = await findUserById(userId)
     if (!user) return null
-    const { name, category, date, time, durationMin, exercises, completed } = workout
+    const { name, category, date, time, durationMin, exercises, completed } =
+        workout
     return new workoutModel({
         userId,
         name,
@@ -119,7 +120,7 @@ async function addWorkout(userId, workout) {
         time,
         durationMin,
         exercises,
-        completed: completed ?? false
+        completed: completed ?? false,
     }).save()
 }
 

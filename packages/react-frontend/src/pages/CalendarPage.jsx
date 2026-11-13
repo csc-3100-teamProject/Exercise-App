@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import './CalendarPage.css'
 
@@ -14,7 +13,9 @@ const NAV_ITEMS = [
 
 function Icon({ name }) {
     const paths = {
-        home: <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+        home: (
+            <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+        ),
         calendar: (
             <>
                 <rect x="3" y="4" width="18" height="17" rx="2" />
@@ -78,7 +79,7 @@ function CalendarPage({
     onToggleWorkout,
     onNavigate,
     storageError,
-    startWithForm = false
+    startWithForm = false,
 }) {
     const [currentDate, setCurrentDate] = useState(new Date())
     const [selectedDate, setSelectedDate] = useState(new Date())
@@ -87,7 +88,7 @@ function CalendarPage({
         name: '',
         category: 'Strength',
         date: dateString(new Date()),
-        time: '18:00'
+        time: '18:00',
     })
     const [editing, setEditing] = useState(false)
     const [deleted, setDeleted] = useState(null)
@@ -100,7 +101,7 @@ function CalendarPage({
     const selected = dateString(selectedDate)
     const monthName = currentDate.toLocaleString('default', {
         month: 'long',
-        year: 'numeric'
+        year: 'numeric',
     })
     const daysInMonth = new Date(year, month + 1, 0).getDate()
     const firstDay = (new Date(year, month, 1).getDay() + 6) % 7
@@ -136,7 +137,7 @@ function CalendarPage({
                 name: '',
                 category: 'Strength',
                 date: selected,
-                time: '18:00'
+                time: '18:00',
             })
             setEditing(false)
         }
@@ -178,16 +179,28 @@ function CalendarPage({
         }
 
         if (form.completed && form.date > today) {
-            setError('Mark this workout planned before moving it to a future date.')
+            setError(
+                'Mark this workout planned before moving it to a future date.'
+            )
             return
         }
         const duration = form.durationMin ? Number(form.durationMin) : undefined
-        if (duration !== undefined &&
-            (!Number.isInteger(duration) || duration < 1 || duration > 1440)) {
-            setError('Enter a duration between 1 and 1440 minutes, or leave it blank.')
+        if (
+            duration !== undefined &&
+            (!Number.isInteger(duration) || duration < 1 || duration > 1440)
+        ) {
+            setError(
+                'Enter a duration between 1 and 1440 minutes, or leave it blank.'
+            )
             return
         }
-        onSaveWorkout({ ...form, name: form.name.trim(), durationMin: duration, completed: form.completed || false, exercises: form.exercises || [] })
+        onSaveWorkout({
+            ...form,
+            name: form.name.trim(),
+            durationMin: duration,
+            completed: form.completed || false,
+            exercises: form.exercises || [],
+        })
         setCurrentDate(new Date(date.getFullYear(), date.getMonth(), 1))
         setSelectedDate(date)
         setShowForm(false)
@@ -331,11 +344,13 @@ function CalendarPage({
                     </div>
 
                     <div className="calendar-grid">
-                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                            <div className="calendar-weekday" key={day}>
-                                {day}
-                            </div>
-                        ))}
+                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(
+                            (day) => (
+                                <div className="calendar-weekday" key={day}>
+                                    {day}
+                                </div>
+                            )
+                        )}
 
                         {Array.from({ length: firstDay }, (_, i) => (
                             <div key={`empty-${i}`} aria-hidden="true" />
@@ -359,19 +374,29 @@ function CalendarPage({
                                     key={day}
                                     className={dayClass}
                                     aria-pressed={isSelected(day)}
-                                    aria-current={dayKey === today ? 'date' : undefined}
-                                    aria-label={`${date.toLocaleDateString('en-US', {
-                                        month: 'long',
-                                        day: 'numeric',
-                                        year: 'numeric'
-                                    })}, ${onDay.length} workouts`}
+                                    aria-current={
+                                        dayKey === today ? 'date' : undefined
+                                    }
+                                    aria-label={`${date.toLocaleDateString(
+                                        'en-US',
+                                        {
+                                            month: 'long',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                        }
+                                    )}, ${onDay.length} workouts`}
                                     onClick={() => selectDate(date)}
                                 >
                                     <span>{day}</span>
-                                    <span className="calendar-dots" aria-hidden="true">
+                                    <span
+                                        className="calendar-dots"
+                                        aria-hidden="true"
+                                    >
                                         {CATEGORIES.filter((category) =>
                                             onDay.some(
-                                                (workout) => workout.category === category
+                                                (workout) =>
+                                                    workout.category ===
+                                                    category
                                             )
                                         ).map((category) => (
                                             <i
@@ -432,7 +457,7 @@ function CalendarPage({
                         {selectedDate.toLocaleDateString('en-US', {
                             weekday: 'long',
                             month: 'long',
-                            day: 'numeric'
+                            day: 'numeric',
                         })}
                     </h2>
 
@@ -449,18 +474,23 @@ function CalendarPage({
                         >
                             <h3>{workout.name}</h3>
                             <p>
-                                {formatTime(workout.time)} · {workout.category} ·{' '}
-                                {workout.completed ? 'Completed' : 'Planned'}
+                                {formatTime(workout.time)} · {workout.category}{' '}
+                                · {workout.completed ? 'Completed' : 'Planned'}
                             </p>
 
                             <div className="calendar-actions">
                                 <button
                                     type="button"
                                     className="calendar-complete"
-                                    disabled={!workout.completed && workout.date > today}
+                                    disabled={
+                                        !workout.completed &&
+                                        workout.date > today
+                                    }
                                     onClick={() => toggleWorkout(workout)}
                                 >
-                                    {workout.completed ? 'Mark planned' : 'Mark complete'}
+                                    {workout.completed
+                                        ? 'Mark planned'
+                                        : 'Mark complete'}
                                 </button>
 
                                 <button
@@ -503,4 +533,3 @@ function CalendarPage({
 }
 
 export default CalendarPage
-

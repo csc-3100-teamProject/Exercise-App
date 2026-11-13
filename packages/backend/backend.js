@@ -144,59 +144,73 @@ app.get('/users/:id/workouts', (req, res) => {
         .catch(() => res.status(500).send('Unable to get workout'))
 })
 
-app.patch('/users/:id/workouts/:workoutId', functions.authenticateUser, (req, res) => {
-    const { id, workoutId } = req.params
+app.patch(
+    '/users/:id/workouts/:workoutId',
+    functions.authenticateUser,
+    (req, res) => {
+        const { id, workoutId } = req.params
 
-    if (!mongoose.isValidObjectId(id) || !mongoose.isValidObjectId(workoutId)) {
-        return res.status(404).send('Workout not found')
+        if (
+            !mongoose.isValidObjectId(id) ||
+            !mongoose.isValidObjectId(workoutId)
+        ) {
+            return res.status(404).send('Workout not found')
+        }
+
+        if (req.user.id !== id) {
+            return res.status(403).send('Forbidden')
+        }
+
+        functions
+            .updateWorkout(id, workoutId, req.body)
+            .then((workout) => {
+                if (!workout) {
+                    return res.status(404).send('Workout not found')
+                }
+
+                res.status(200).json(workout)
+            })
+            .catch((error) => {
+                if (error.name === 'ValidationError') {
+                    res.status(400).send(error.message)
+                } else {
+                    res.status(500).send(error.name)
+                }
+            })
     }
+)
 
-    if (req.user.id !== id) {
-        return res.status(403).send('Forbidden')
-    }
+app.delete(
+    '/users/:id/workouts/:workoutId',
+    functions.authenticateUser,
+    (req, res) => {
+        const { id, workoutId } = req.params
 
-    functions
-        .updateWorkout(id, workoutId, req.body)
-        .then((workout) => {
-            if (!workout) {
-                return res.status(404).send('Workout not found')
-            }
+        if (
+            !mongoose.isValidObjectId(id) ||
+            !mongoose.isValidObjectId(workoutId)
+        ) {
+            return res.status(404).send('Workout not found')
+        }
 
-            res.status(200).json(workout)
-        })
-        .catch((error) => {
-            if (error.name === 'ValidationError') {
-                res.status(400).send(error.message)
-            } else {
+        if (req.user.id !== id) {
+            return res.status(403).send('Forbidden')
+        }
+
+        functions
+            .deleteWorkout(id, workoutId)
+            .then((workout) => {
+                if (!workout) {
+                    return res.status(404).send('Workout not found')
+                }
+
+                res.status(204).send()
+            })
+            .catch((error) => {
                 res.status(500).send(error.name)
-            }
-        })
-})
-
-app.delete('/users/:id/workouts/:workoutId', functions.authenticateUser, (req, res) => {
-    const { id, workoutId } = req.params
-
-    if (!mongoose.isValidObjectId(id) || !mongoose.isValidObjectId(workoutId)) {
-        return res.status(404).send('Workout not found')
+            })
     }
-
-    if (req.user.id !== id) {
-        return res.status(403).send('Forbidden')
-    }
-
-    functions
-        .deleteWorkout(id, workoutId)
-        .then((workout) => {
-            if (!workout) {
-                return res.status(404).send('Workout not found')
-            }
-
-            res.status(204).send()
-        })
-        .catch((error) => {
-            res.status(500).send(error.name)
-        })
-})
+)
 
 app.get('/users/:id/profile', (req, res) => {
     const id = req.params.id

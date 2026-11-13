@@ -1,4 +1,3 @@
-
 /* Page background */
 
 body:has(.profile-page),
@@ -203,7 +202,6 @@ body:has(.profile-page),
     margin-top: 14px;
 }
 
-
 /* Bottom navigation */
 
 .profile-nav {
@@ -255,7 +253,6 @@ body:has(.profile-page),
     color: #c6f35c;
 }
 
-
 /* Small screens */
 
 @media (max-width: 480px) {
@@ -275,7 +272,6 @@ body:has(.profile-page),
         font-size: 10px;
     }
 }
-
 
 /* Match Overview navigation exactly */
 
@@ -319,4 +315,3 @@ body:has(.profile-page),
     width: 24px;
     height: 24px;
 }
-

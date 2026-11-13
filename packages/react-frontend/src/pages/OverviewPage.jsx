@@ -47,7 +47,9 @@ function planSummary(plan) {
 
 function Icon({ name }) {
     const paths = {
-        home: <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+        home: (
+            <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+        ),
         calendar: (
             <>
                 <rect x="3" y="4" width="18" height="17" rx="2" />
@@ -213,7 +215,12 @@ function WeeklyGoal({ goal }) {
             <div className="goal-body">
                 <div className="goal-ring">
                     <svg viewBox="0 0 128 128" aria-hidden="true">
-                        <circle className="ring-track" cx="64" cy="64" r={radius} />
+                        <circle
+                            className="ring-track"
+                            cx="64"
+                            cy="64"
+                            r={radius}
+                        />
                         <circle
                             className="ring-value"
                             cx="64"
@@ -243,7 +250,9 @@ function WeeklyGoal({ goal }) {
                     </p>
                     <span
                         className={
-                            goal.status === 'Behind' ? 'status-behind' : 'status-ok'
+                            goal.status === 'Behind'
+                                ? 'status-behind'
+                                : 'status-ok'
                         }
                     >
                         {goal.status}
@@ -339,10 +348,9 @@ function OverviewPage({ user, onStart, onAdd, onNavigate }) {
 
     useEffect(() => {
         const controller = new AbortController()
-        fetch(
-            `${API}/users/${user.id}/overview?date=${localDateString()}`,
-            { signal: controller.signal }
-        )
+        fetch(`${API}/users/${user.id}/overview?date=${localDateString()}`, {
+            signal: controller.signal,
+        })
             .then((response) => {
                 if (!response.ok) throw new Error('Request failed')
                 return response.json()
@@ -405,10 +413,8 @@ function OverviewPage({ user, onStart, onAdd, onNavigate }) {
                             <h2 id="today-heading">Today’s plan</h2>
                             <div className="section-sub">
                                 <p>{planSummary(overview.todaysPlan)}</p>
-                                <button 
-					type="button" 
-					className="link-button">
-					onClick={() => onNavigate('calendar')}
+                                <button type="button" className="link-button">
+                                    onClick={() => onNavigate('calendar')}
                                     View calendar
                                 </button>
                             </div>
@@ -436,9 +442,9 @@ function OverviewPage({ user, onStart, onAdd, onNavigate }) {
                         type="button"
                         className={label === 'Overview' ? 'nav-active' : ''}
                         aria-current={label === 'Overview' ? 'page' : undefined}
-			onClick={() => {
-                		onNavigate(label.toLowerCase())
-            		}}
+                        onClick={() => {
+                            onNavigate(label.toLowerCase())
+                        }}
                     >
                         <Icon name={icon} />
                         <span>{label}</span>

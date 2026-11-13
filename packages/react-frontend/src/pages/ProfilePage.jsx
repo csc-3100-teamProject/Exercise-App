@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 import './ProfilePage.css'
 
@@ -14,7 +13,9 @@ const NAV_ITEMS = [
 
 function Icon({ name }) {
     const paths = {
-        home: <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+        home: (
+            <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+        ),
         calendar: (
             <>
                 <rect x="3" y="4" width="18" height="17" rx="2" />
@@ -86,7 +87,7 @@ function ProfilePage({ user, onNavigate, onLogout }) {
             const res = await fetch(`${API}/users/${user.id}/profile`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email })
+                body: JSON.stringify({ username, email }),
             })
 
             if (!res.ok) {
@@ -122,10 +123,7 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                             <p>{email}</p>
                         </div>
 
-                        <form
-                            className="profile-card"
-                            onSubmit={saveProfile}
-                        >
+                        <form className="profile-card" onSubmit={saveProfile}>
                             <div className="profile-card-header">
                                 <h2>Personal information</h2>
 
@@ -140,9 +138,7 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                                 </button>
                             </div>
 
-                            <label htmlFor="profile-username">
-                                Username
-                            </label>
+                            <label htmlFor="profile-username">Username</label>
 
                             <input
                                 id="profile-username"
@@ -152,9 +148,7 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                                 required
                             />
 
-                            <label htmlFor="profile-email">
-                                Email
-                            </label>
+                            <label htmlFor="profile-email">Email</label>
 
                             <input
                                 id="profile-email"
@@ -183,9 +177,7 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                         )}
 
                         {message && (
-                            <p className="profile-success">
-                                {message}
-                            </p>
+                            <p className="profile-success">{message}</p>
                         )}
 
                         <button
@@ -218,4 +210,3 @@ function ProfilePage({ user, onNavigate, onLogout }) {
 }
 
 export default ProfilePage
-

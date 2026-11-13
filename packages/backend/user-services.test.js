@@ -2,17 +2,7 @@ import User from './user.js'
 import mockingoose from 'mockingoose'
 import functions from './user-services.js'
 import workout from './workout.js'
-import {
-    beforeEach,
-    afterEach,
-    afterAll,
-    expect,
-    test,
-    jest,
-    describe,
-} from '@jest/globals'
-
-let mongoServer
+import { beforeEach, expect, test, jest } from '@jest/globals'
 
 beforeEach(async () => {
     jest.clearAllMocks()
@@ -35,7 +25,7 @@ test('Testing loginCheck with correct password', async () => {
         'Yesman666@gmail.com',
         '123456789'
     )
-    expect(result.password).toBe(
+    expect(result.user.password).toBe(
         '$2b$12$C2UPcZtP3hq5B5SaB.iZlOW.u4AqD11M6X5beWTKl169BVdWxu6Pm'
     )
 })

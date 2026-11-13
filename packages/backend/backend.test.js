@@ -31,7 +31,7 @@ test('Testing Post function for creating user in system', async () => {
         email: 'Yesman666@gmail.com',
         password: '123456789',
     })
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(201)
     const result = await User.findOne({ email: 'Yesman666@gmail.com' })
     expect(result.username).toBe('Jacky')
     expect(result.weeklyGoal).toBe(5)
@@ -78,7 +78,7 @@ test('Testing Post login authentication fail', async () => {
         email: 'Yesman666@gmail.com',
         password: '12345',
     })
-    expect(response.status).toBe(404)
+    expect(response.status).toBe(401)
 })
 
 test('Signup with missing fields returns 400', async () => {
@@ -105,11 +105,11 @@ test('Login with missing body returns 400', async () => {
     expect(response.status).toBe(400)
 })
 
-test('Login with unknown email returns 404', async () => {
+test('Login with unknown email returns 401', async () => {
     const response = await request(app)
         .post('/auth/login')
         .send({ email: 'nobody@example.com', password: '123456789' })
-    expect(response.status).toBe(404)
+    expect(response.status).toBe(401)
 })
 
 test('Signup then login works end to end', async () => {

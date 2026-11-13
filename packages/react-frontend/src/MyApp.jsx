@@ -21,21 +21,35 @@ function localDateString(date = new Date()) {
 function readWorkouts(storageKey) {
     try {
         const saved = JSON.parse(localStorage.getItem(storageKey) || '[]')
-        if (!Array.isArray(saved) || !saved.every((workout) =>
-            workout && typeof (workout.id || workout._id) === 'string' &&
-            typeof workout.name === 'string' && workout.name.trim() !== '' &&
-            ['Strength', 'Cardio', 'Mobility'].includes(workout.category) &&
-            /^\d{4}-\d{2}-\d{2}$/.test(workout.date) &&
-            (workout.durationMin === undefined ||
-                (Number.isInteger(workout.durationMin) && workout.durationMin >= 0 && workout.durationMin <= 1440)) &&
-            typeof workout.completed === 'boolean' &&
-            (workout.exercises === undefined || Array.isArray(workout.exercises))
-        )) {
+        if (
+            !Array.isArray(saved) ||
+            !saved.every(
+                (workout) =>
+                    workout &&
+                    typeof (workout.id || workout._id) === 'string' &&
+                    typeof workout.name === 'string' &&
+                    workout.name.trim() !== '' &&
+                    ['Strength', 'Cardio', 'Mobility'].includes(
+                        workout.category
+                    ) &&
+                    /^\d{4}-\d{2}-\d{2}$/.test(workout.date) &&
+                    (workout.durationMin === undefined ||
+                        (Number.isInteger(workout.durationMin) &&
+                            workout.durationMin >= 0 &&
+                            workout.durationMin <= 1440)) &&
+                    typeof workout.completed === 'boolean' &&
+                    (workout.exercises === undefined ||
+                        Array.isArray(workout.exercises))
+            )
+        ) {
             throw new Error('Invalid saved workout data')
         }
         return { workouts: saved, error: '' }
     } catch {
-        return { workouts: [], error: 'Could not load workouts saved on this device. Your calendar starts empty.' }
+        return {
+            workouts: [],
+            error: 'Could not load workouts saved on this device. Your calendar starts empty.',
+        }
     }
 }
 
@@ -75,7 +89,16 @@ function UserPages({ user, onLogout }) {
     }, [user.id])
 
     function navigate(page) {
-        if (!['overview', 'calendar', 'routines', 'progress', 'profile'].includes(page)) return
+        if (
+            ![
+                'overview',
+                'calendar',
+                'routines',
+                'progress',
+                'profile',
+            ].includes(page)
+        )
+            return
         setCurrentPage(page)
         setShowCalendarForm(false)
         window.scrollTo(0, 0)
@@ -86,7 +109,8 @@ function UserPages({ user, onLogout }) {
         try {
             localStorage.setItem(storageKey, JSON.stringify(workouts))
         } catch {
-            error = 'Could not save on this device. Your latest changes are available until you refresh.'
+            error =
+                'Could not save on this device. Your latest changes are available until you refresh.'
         }
         setCalendar({ workouts, error })
     }
@@ -135,7 +159,11 @@ function UserPages({ user, onLogout }) {
     }
 
     function deleteWorkout(id) {
-        updateWorkouts(calendar.workouts.filter((workout) => (workout.id || workout._id) !== id))
+        updateWorkouts(
+            calendar.workouts.filter(
+                (workout) => (workout.id || workout._id) !== id
+            )
+        )
     }
 
     function toggleWorkout(id) {
@@ -180,7 +208,13 @@ function UserPages({ user, onLogout }) {
     }
 
     if (currentPage === 'progress') {
-        return <ProgressPage workouts={calendar.workouts} onNavigate={navigate} storageError={calendar.error} />
+        return (
+            <ProgressPage
+                workouts={calendar.workouts}
+                onNavigate={navigate}
+                storageError={calendar.error}
+            />
+        )
     }
 
     if (currentPage === 'routines') {
@@ -188,10 +222,22 @@ function UserPages({ user, onLogout }) {
     }
 
     if (currentPage === 'profile') {
-        return <ProfilePage user={user} onNavigate={navigate} onLogout={onLogout} />
+        return (
+            <ProfilePage
+                user={user}
+                onNavigate={navigate}
+                onLogout={onLogout}
+            />
+        )
     }
 
-    return <OverviewPage user={user} onNavigate={navigate} onAdd={openCalendarForm} />
+    return (
+        <OverviewPage
+            user={user}
+            onNavigate={navigate}
+            onAdd={openCalendarForm}
+        />
+    )
 }
 
 function MyApp() {
@@ -199,7 +245,9 @@ function MyApp() {
 
     if (!user) return <LoginPage onLogin={setUser} />
 
-    return <UserPages key={user.id} user={user} onLogout={() => setUser(null)} />
+    return (
+        <UserPages key={user.id} user={user} onLogout={() => setUser(null)} />
+    )
 }
 
 export default MyApp
