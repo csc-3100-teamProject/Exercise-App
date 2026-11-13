@@ -262,7 +262,7 @@ function WeeklyGoal({ goal }) {
         </section>
     )
 }
-
+//IMPORTANT: removed ,streak on line 281 to get eslint working
 function StreakCard({ streak }) {
     return (
         <section className="panel" aria-labelledby="streak-heading">
@@ -278,7 +278,7 @@ function StreakCard({ streak }) {
                 {streak.longestWeeks === 1 ? 'week' : 'weeks'}
             </p>
             <div className="streak-days">
-                {streak.days.map((day, index) => (
+                {streak.days.map((day) => (
                     <span
                         key={day.label}
                         className={`streak-day${day.status ? ` streak-${day.status}` : ''}`}
