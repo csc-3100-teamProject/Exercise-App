@@ -110,7 +110,7 @@ async function getOverview(id, today) {
 async function addWorkout(userId, workout) {
     const user = await findUserById(userId)
     if (!user) return null
-    const { name, category, date, time, durationMin, exercises } = workout
+    const { name, category, date, time, durationMin, exercises, completed } = workout
     return new workoutModel({
         userId,
         name,
@@ -119,7 +119,37 @@ async function addWorkout(userId, workout) {
         time,
         durationMin,
         exercises,
+        completed: completed ?? false
     }).save()
+}
+
+function updateWorkout(userId, workoutId, workout) {
+    const allowedFields = [
+        'name',
+        'category',
+        'date',
+        'time',
+        'durationMin',
+        'exercises',
+        'completed',
+    ]
+
+    const updates = Object.fromEntries(
+        Object.entries(workout).filter(([key]) => allowedFields.includes(key))
+    )
+
+    return workoutModel.findOneAndUpdate(
+        { _id: workoutId, userId },
+        { $set: updates },
+        { new: true, runValidators: true }
+    )
+}
+
+function deleteWorkout(userId, workoutId) {
+    return workoutModel.findOneAndDelete({
+        _id: workoutId,
+        userId,
+    })
 }
 
 function findUserById(id) {
@@ -174,6 +204,8 @@ export default {
     loginCheck,
     getOverview,
     addWorkout,
+    updateWorkout,
+    deleteWorkout,
     findWorkout,
     getProfile,
     updateProfile,

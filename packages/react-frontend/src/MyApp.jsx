@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import LoginPage from './pages/LoginPage'
 import OverviewPage from './pages/OverviewPage'
 import CalendarPage from './pages/CalendarPage'
@@ -46,6 +46,34 @@ function UserPages({ user, onLogout }) {
     const [currentPage, setCurrentPage] = useState('overview')
     const [showCalendarForm, setShowCalendarForm] = useState(false)
 
+    function authHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+    }
+
+    useEffect(() => {
+        fetch(`http://localhost:8000/users/${user.id}/workouts`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) throw new Error('Could not load workouts')
+                return response.json()
+            })
+            .then((workouts) => {
+                setCalendar({ workouts, error: '' })
+            })
+            .catch(() => {
+                setCalendar({
+                    workouts: [],
+                    error: 'Could not load workouts from the server.',
+                })
+            })
+    }, [user.id])
+
     function navigate(page) {
         if (!['overview', 'calendar', 'routines', 'progress', 'profile'].includes(page)) return
         setCurrentPage(page)
@@ -64,12 +92,46 @@ function UserPages({ user, onLogout }) {
     }
 
     function saveWorkout(workout) {
-        const saved = { ...workout, id: workout.id || workout._id || crypto.randomUUID() }
-        const exists = calendar.workouts.some((item) => (item.id || item._id) === saved.id)
-        const updated = exists
-            ? calendar.workouts.map((item) => (item.id || item._id) === saved.id ? saved : item)
-            : [...calendar.workouts, saved]
-        updateWorkouts(updated)
+        const isExistingWorkout = Boolean(workout._id)
+
+        const endpoint = isExistingWorkout
+            ? `http://localhost:8000/users/${user.id}/workouts/${workout._id}`
+            : `http://localhost:8000/users/${user.id}/workouts`
+
+        return fetch(endpoint, {
+            method: isExistingWorkout ? 'PATCH' : 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify(workout),
+        })
+            .then(async (response) => {
+                if (!response.ok) {
+                    const message = await response.text()
+                    throw new Error(
+                        `Could not save workout: ${response.status} ${message}`
+                    )
+                }
+
+                return response.json()
+            })
+            .then((savedWorkout) => {
+                const exists = calendar.workouts.some(
+                    (item) => item._id === savedWorkout._id
+                )
+
+                const updated = exists
+                    ? calendar.workouts.map((item) =>
+                          item._id === savedWorkout._id ? savedWorkout : item
+                      )
+                    : [...calendar.workouts, savedWorkout]
+
+                updateWorkouts(updated)
+            })
+            .catch((error) => {
+                setCalendar((current) => ({
+                    ...current,
+                    error: error.message,
+                }))
+            })
     }
 
     function deleteWorkout(id) {
@@ -77,13 +139,24 @@ function UserPages({ user, onLogout }) {
     }
 
     function toggleWorkout(id) {
-        const updated = calendar.workouts.map((workout) => {
-            if ((workout.id || workout._id) !== id) return workout
-            const today = localDateString()
-            if (!workout.completed && workout.date > today) return workout
-            return { ...workout, completed: !workout.completed }
-        })
-        updateWorkouts(updated)
+        const workout = calendar.workouts.find(
+            (item) => (item.id || item._id) === id
+        )
+
+        if (!workout) return
+
+        const today = localDateString()
+
+        if (!workout.completed && workout.date > today) {
+            return
+        }
+
+        const updatedWorkout = {
+            ...workout,
+            completed: !workout.completed,
+        }
+
+        saveWorkout(updatedWorkout)
     }
 
     function openCalendarForm() {

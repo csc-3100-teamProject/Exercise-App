@@ -24,7 +24,7 @@ const WorkoutSchema = new mongoose.Schema(
         // the "week" a workout belongs to never shifts with time zones.
         date: { type: String, required: true, match: /^\d{4}-\d{2}-\d{2}$/ },
         time: { type: String, match: /^\d{2}:\d{2}$/ },
-        durationMin: { type: Number, required: true, min: 0 },
+        durationMin: { type: Number, min: 1, max: 1600 },
         exercises: { type: [ExerciseSchema], default: [] },
         completed: { type: Boolean, default: false },
     },
