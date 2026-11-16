@@ -10,7 +10,8 @@
         "test": "NODE_OPTIONS=--experimental-vm-modules jest",
         "testCoverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
         "dev": "npx nodemon backend.js",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "start": "node backend.js"
     },
     "jest": {
         "transform": {}
