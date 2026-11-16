@@ -1,5 +1,6 @@
+/*
 import library from './exerciseLibrary.json'
-
+*/
 export const TRACKING_FIELDS = {
     sets: { label: 'Sets', unit: 'sets', min: 1, max: 1000, step: 1 },
     reps: { label: 'Reps', unit: 'reps', min: 1, max: 1000, step: 1 },
@@ -20,7 +21,7 @@ export const TRACKING_FORMATS = {
     time: { label: 'Time', fields: ['durationMin'] },
     weight_distance: { label: 'Sets, load and distance', fields: ['sets', 'weight', 'distanceMeters'] }
 }
-
+/*
 export const EXERCISES = library.map((exercise) => ({
 
 }))
@@ -32,3 +33,4 @@ export function trackingFields(exercise) {
 export function exerciseTargets(exercise) {
 
 }
+*/
