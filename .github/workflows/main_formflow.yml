@@ -24,6 +24,8 @@ jobs:
           node-version: '26.x'
 
       - name: npm install, build, and test
+        env:
+          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
         run: |
           npm install
           npm run build --if-present
