@@ -14,7 +14,7 @@
         "dev": "concurrently \"npm --prefix packages/backend run dev\" \"npm --prefix packages/react-frontend run dev\"",
         "lint": "npx eslint . && prettier --write",
         "test": "npm --prefix packages/backend run test",
-        "start": "node packages/backend backend.js"
+        "start": "node packages/backend/backend.js"
     },
     "workspaces": [
         "packages/*"
