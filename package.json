@@ -6,6 +6,7 @@
     "author": "",
     "type": "module",
     "main": "index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "scripts": {
         "testBackend": "npm --prefix packages/backend run test",
         "testBackendCoverage": "npm --prefix packages/backend run testCoverage",

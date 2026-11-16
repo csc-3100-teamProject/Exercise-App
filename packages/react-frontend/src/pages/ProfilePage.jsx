@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './ProfilePage.css'
 
-const API = 'http://localhost:8000'
+const API = 'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
 
 const NAV_ITEMS = [
     ['home', 'Overview'],

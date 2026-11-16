@@ -6,6 +6,8 @@ import ProgressPage from './pages/ProgressPage'
 import ProfilePage from './pages/ProfilePage'
 import RoutinesPage from './pages/RoutinesPage'
 
+const API_URL = 'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
+
 const devUser =
     import.meta.env.DEV && import.meta.env.VITE_DEV_USER_ID
         ? { id: import.meta.env.VITE_DEV_USER_ID }
@@ -68,7 +70,7 @@ function UserPages({ user, onLogout }) {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:8000/users/${user.id}/workouts`, {
+        fetch(`${API_URL}/users/${user.id}/workouts`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -119,8 +121,8 @@ function UserPages({ user, onLogout }) {
         const isExistingWorkout = Boolean(workout._id)
 
         const endpoint = isExistingWorkout
-            ? `http://localhost:8000/users/${user.id}/workouts/${workout._id}`
-            : `http://localhost:8000/users/${user.id}/workouts`
+            ? `${API_URL}/users/${user.id}/workouts/${workout._id}`
+            : `${API_URL}/users/${user.id}/workouts`
 
         return fetch(endpoint, {
             method: isExistingWorkout ? 'PATCH' : 'POST',

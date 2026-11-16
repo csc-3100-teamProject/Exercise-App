@@ -37,7 +37,7 @@ function LoginPage({ onLogin }) {
 
         setIsSubmitting(true)
 
-        return fetch(`http://localhost:8000${endpoint}`, {
+        return fetch(`${API_URL}${endpoint}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

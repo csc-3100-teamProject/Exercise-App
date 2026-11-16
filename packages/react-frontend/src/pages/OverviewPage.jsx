@@ -1,7 +1,7 @@
 import './OverviewPage.css'
 import { useEffect, useState } from 'react'
 
-const API = 'http://localhost:8000'
+const API = 'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
 const MAX_EXERCISES_SHOWN = 3
 
 function localDateString(date = new Date()) {

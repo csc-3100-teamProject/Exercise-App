@@ -1,0 +1,2245 @@
+[
+    {
+        "id": "ex-001",
+        "name": "Barbell bench press",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Triceps",
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Barbell",
+            "Flat bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-001.svg"
+        }
+    },
+    {
+        "id": "ex-002",
+        "name": "Dumbbell bench press",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Triceps",
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Flat bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-002.svg"
+        }
+    },
+    {
+        "id": "ex-003",
+        "name": "Incline barbell bench press",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Front deltoids",
+                "Triceps"
+            ]
+        },
+        "equipment": [
+            "Barbell",
+            "Incline bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-003.svg"
+        }
+    },
+    {
+        "id": "ex-004",
+        "name": "Incline dumbbell bench press",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Front deltoids",
+                "Triceps"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Incline bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-004.svg"
+        }
+    },
+    {
+        "id": "ex-005",
+        "name": "Decline bench press",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Triceps",
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Barbell",
+            "Decline bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-005.svg"
+        }
+    },
+    {
+        "id": "ex-006",
+        "name": "Machine chest press",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Triceps",
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Chest press machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-006.svg"
+        }
+    },
+    {
+        "id": "ex-007",
+        "name": "Dumbbell chest fly",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Flat bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-007.svg"
+        }
+    },
+    {
+        "id": "ex-008",
+        "name": "Cable chest fly",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Cable machine",
+            "Handles"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-008.svg"
+        }
+    },
+    {
+        "id": "ex-009",
+        "name": "Pec deck fly",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Pec deck machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-009.svg"
+        }
+    },
+    {
+        "id": "ex-010",
+        "name": "Push-up",
+        "type": "Strength",
+        "category": "Chest",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Triceps",
+                "Front deltoids",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "None"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-010.svg"
+        }
+    },
+    {
+        "id": "ex-011",
+        "name": "Pull-up",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Lats"
+            ],
+            "secondary": [
+                "Biceps",
+                "Upper back",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Pull-up bar"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-011.svg"
+        }
+    },
+    {
+        "id": "ex-012",
+        "name": "Chin-up",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Lats"
+            ],
+            "secondary": [
+                "Biceps",
+                "Upper back",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Pull-up bar"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-012.svg"
+        }
+    },
+    {
+        "id": "ex-013",
+        "name": "Assisted pull-up",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Lats"
+            ],
+            "secondary": [
+                "Biceps",
+                "Upper back"
+            ]
+        },
+        "equipment": [
+            "Assisted pull-up machine"
+        ],
+        "trackingFormat": "assistance_reps",
+        "preview": {
+            "file": "exercise-013.svg"
+        }
+    },
+    {
+        "id": "ex-014",
+        "name": "Lat pulldown",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Lats"
+            ],
+            "secondary": [
+                "Biceps",
+                "Upper back"
+            ]
+        },
+        "equipment": [
+            "Cable machine",
+            "Lat bar"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-014.svg"
+        }
+    },
+    {
+        "id": "ex-015",
+        "name": "Seated cable row",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Upper back"
+            ],
+            "secondary": [
+                "Lats",
+                "Biceps",
+                "Rear deltoids"
+            ]
+        },
+        "equipment": [
+            "Cable row machine",
+            "Row handle"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-015.svg"
+        }
+    },
+    {
+        "id": "ex-016",
+        "name": "Barbell bent-over row",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Upper back"
+            ],
+            "secondary": [
+                "Lats",
+                "Biceps",
+                "Rear deltoids",
+                "Spinal erectors"
+            ]
+        },
+        "equipment": [
+            "Barbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-016.svg"
+        }
+    },
+    {
+        "id": "ex-017",
+        "name": "Single-arm dumbbell row",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Lats"
+            ],
+            "secondary": [
+                "Upper back",
+                "Biceps",
+                "Rear deltoids"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Flat bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-017.svg"
+        }
+    },
+    {
+        "id": "ex-018",
+        "name": "Chest-supported dumbbell row",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Upper back"
+            ],
+            "secondary": [
+                "Lats",
+                "Biceps",
+                "Rear deltoids"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Incline bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-018.svg"
+        }
+    },
+    {
+        "id": "ex-019",
+        "name": "Machine row",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Upper back"
+            ],
+            "secondary": [
+                "Lats",
+                "Biceps",
+                "Rear deltoids"
+            ]
+        },
+        "equipment": [
+            "Row machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-019.svg"
+        }
+    },
+    {
+        "id": "ex-020",
+        "name": "T-bar row",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Upper back"
+            ],
+            "secondary": [
+                "Lats",
+                "Biceps",
+                "Rear deltoids"
+            ]
+        },
+        "equipment": [
+            "T-bar row station"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-020.svg"
+        }
+    },
+    {
+        "id": "ex-021",
+        "name": "Straight-arm cable pulldown",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Lats"
+            ],
+            "secondary": [
+                "Triceps",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Cable machine",
+            "Straight bar"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-021.svg"
+        }
+    },
+    {
+        "id": "ex-022",
+        "name": "Back extension",
+        "type": "Strength",
+        "category": "Back",
+        "muscleGroups": {
+            "primary": [
+                "Spinal erectors"
+            ],
+            "secondary": [
+                "Glutes",
+                "Hamstrings"
+            ]
+        },
+        "equipment": [
+            "Back extension bench"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-022.svg"
+        }
+    },
+    {
+        "id": "ex-023",
+        "name": "Standing barbell overhead press",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Front deltoids"
+            ],
+            "secondary": [
+                "Side deltoids",
+                "Triceps",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Barbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-023.svg"
+        }
+    },
+    {
+        "id": "ex-024",
+        "name": "Seated dumbbell shoulder press",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Front deltoids"
+            ],
+            "secondary": [
+                "Side deltoids",
+                "Triceps"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Upright bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-024.svg"
+        }
+    },
+    {
+        "id": "ex-025",
+        "name": "Machine shoulder press",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Front deltoids"
+            ],
+            "secondary": [
+                "Side deltoids",
+                "Triceps"
+            ]
+        },
+        "equipment": [
+            "Shoulder press machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-025.svg"
+        }
+    },
+    {
+        "id": "ex-026",
+        "name": "Arnold press",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Front deltoids"
+            ],
+            "secondary": [
+                "Side deltoids",
+                "Triceps"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Upright bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-026.svg"
+        }
+    },
+    {
+        "id": "ex-027",
+        "name": "Dumbbell lateral raise",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Side deltoids"
+            ],
+            "secondary": [
+                "Upper traps"
+            ]
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-027.svg"
+        }
+    },
+    {
+        "id": "ex-028",
+        "name": "Cable lateral raise",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Side deltoids"
+            ],
+            "secondary": [
+                "Upper traps"
+            ]
+        },
+        "equipment": [
+            "Cable machine",
+            "Handle"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-028.svg"
+        }
+    },
+    {
+        "id": "ex-029",
+        "name": "Dumbbell front raise",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Front deltoids"
+            ],
+            "secondary": [
+                "Side deltoids"
+            ]
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-029.svg"
+        }
+    },
+    {
+        "id": "ex-030",
+        "name": "Bent-over dumbbell reverse fly",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Rear deltoids"
+            ],
+            "secondary": [
+                "Upper back"
+            ]
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-030.svg"
+        }
+    },
+    {
+        "id": "ex-031",
+        "name": "Reverse pec deck fly",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Rear deltoids"
+            ],
+            "secondary": [
+                "Upper back"
+            ]
+        },
+        "equipment": [
+            "Pec deck machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-031.svg"
+        }
+    },
+    {
+        "id": "ex-032",
+        "name": "Cable face pull",
+        "type": "Strength",
+        "category": "Shoulders",
+        "muscleGroups": {
+            "primary": [
+                "Rear deltoids"
+            ],
+            "secondary": [
+                "Upper back",
+                "Rotator cuff"
+            ]
+        },
+        "equipment": [
+            "Cable machine",
+            "Rope attachment"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-032.svg"
+        }
+    },
+    {
+        "id": "ex-033",
+        "name": "Barbell curl",
+        "type": "Strength",
+        "category": "Biceps and forearms",
+        "muscleGroups": {
+            "primary": [
+                "Biceps"
+            ],
+            "secondary": [
+                "Brachialis",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Barbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-033.svg"
+        }
+    },
+    {
+        "id": "ex-034",
+        "name": "EZ-bar curl",
+        "type": "Strength",
+        "category": "Biceps and forearms",
+        "muscleGroups": {
+            "primary": [
+                "Biceps"
+            ],
+            "secondary": [
+                "Brachialis",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "EZ-bar"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-034.svg"
+        }
+    },
+    {
+        "id": "ex-035",
+        "name": "Dumbbell curl",
+        "type": "Strength",
+        "category": "Biceps and forearms",
+        "muscleGroups": {
+            "primary": [
+                "Biceps"
+            ],
+            "secondary": [
+                "Brachialis",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-035.svg"
+        }
+    },
+    {
+        "id": "ex-036",
+        "name": "Hammer curl",
+        "type": "Strength",
+        "category": "Biceps and forearms",
+        "muscleGroups": {
+            "primary": [
+                "Brachialis"
+            ],
+            "secondary": [
+                "Biceps",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-036.svg"
+        }
+    },
+    {
+        "id": "ex-037",
+        "name": "Incline dumbbell curl",
+        "type": "Strength",
+        "category": "Biceps and forearms",
+        "muscleGroups": {
+            "primary": [
+                "Biceps"
+            ],
+            "secondary": [
+                "Brachialis",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Incline bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-037.svg"
+        }
+    },
+    {
+        "id": "ex-038",
+        "name": "Preacher curl",
+        "type": "Strength",
+        "category": "Biceps and forearms",
+        "muscleGroups": {
+            "primary": [
+                "Biceps"
+            ],
+            "secondary": [
+                "Brachialis"
+            ]
+        },
+        "equipment": [
+            "EZ-bar",
+            "Preacher bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-038.svg"
+        }
+    },
+    {
+        "id": "ex-039",
+        "name": "Cable curl",
+        "type": "Strength",
+        "category": "Biceps and forearms",
+        "muscleGroups": {
+            "primary": [
+                "Biceps"
+            ],
+            "secondary": [
+                "Brachialis",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Cable machine",
+            "Curl attachment"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-039.svg"
+        }
+    },
+    {
+        "id": "ex-040",
+        "name": "Reverse curl",
+        "type": "Strength",
+        "category": "Biceps and forearms",
+        "muscleGroups": {
+            "primary": [
+                "Forearms"
+            ],
+            "secondary": [
+                "Brachialis",
+                "Biceps"
+            ]
+        },
+        "equipment": [
+            "Barbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-040.svg"
+        }
+    },
+    {
+        "id": "ex-041",
+        "name": "Cable triceps pushdown — straight bar",
+        "type": "Strength",
+        "category": "Triceps",
+        "muscleGroups": {
+            "primary": [
+                "Triceps"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Cable machine",
+            "Straight bar"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-041.svg"
+        }
+    },
+    {
+        "id": "ex-042",
+        "name": "Cable triceps pushdown — rope",
+        "type": "Strength",
+        "category": "Triceps",
+        "muscleGroups": {
+            "primary": [
+                "Triceps"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Cable machine",
+            "Rope attachment"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-042.svg"
+        }
+    },
+    {
+        "id": "ex-043",
+        "name": "Overhead cable triceps extension",
+        "type": "Strength",
+        "category": "Triceps",
+        "muscleGroups": {
+            "primary": [
+                "Triceps"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Cable machine",
+            "Rope attachment"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-043.svg"
+        }
+    },
+    {
+        "id": "ex-044",
+        "name": "Overhead dumbbell triceps extension",
+        "type": "Strength",
+        "category": "Triceps",
+        "muscleGroups": {
+            "primary": [
+                "Triceps"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-044.svg"
+        }
+    },
+    {
+        "id": "ex-045",
+        "name": "Lying EZ-bar triceps extension",
+        "type": "Strength",
+        "category": "Triceps",
+        "muscleGroups": {
+            "primary": [
+                "Triceps"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "EZ-bar",
+            "Flat bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-045.svg"
+        }
+    },
+    {
+        "id": "ex-046",
+        "name": "Dumbbell triceps kickback",
+        "type": "Strength",
+        "category": "Triceps",
+        "muscleGroups": {
+            "primary": [
+                "Triceps"
+            ],
+            "secondary": [
+                "Rear deltoids"
+            ]
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-046.svg"
+        }
+    },
+    {
+        "id": "ex-047",
+        "name": "Close-grip bench press",
+        "type": "Strength",
+        "category": "Triceps",
+        "muscleGroups": {
+            "primary": [
+                "Triceps"
+            ],
+            "secondary": [
+                "Chest",
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Barbell",
+            "Flat bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-047.svg"
+        }
+    },
+    {
+        "id": "ex-048",
+        "name": "Triceps dip",
+        "type": "Strength",
+        "category": "Triceps",
+        "muscleGroups": {
+            "primary": [
+                "Triceps"
+            ],
+            "secondary": [
+                "Chest",
+                "Front deltoids"
+            ]
+        },
+        "equipment": [
+            "Parallel bars"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-048.svg"
+        }
+    },
+    {
+        "id": "ex-049",
+        "name": "Barbell back squat",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Adductors",
+                "Core",
+                "Spinal erectors"
+            ]
+        },
+        "equipment": [
+            "Barbell",
+            "Squat rack"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-049.svg"
+        }
+    },
+    {
+        "id": "ex-050",
+        "name": "Barbell front squat",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Core",
+                "Upper back"
+            ]
+        },
+        "equipment": [
+            "Barbell",
+            "Squat rack"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-050.svg"
+        }
+    },
+    {
+        "id": "ex-051",
+        "name": "Goblet squat",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Core",
+                "Adductors"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Kettlebell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-051.svg"
+        }
+    },
+    {
+        "id": "ex-052",
+        "name": "Bodyweight squat",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Core",
+                "Adductors"
+            ]
+        },
+        "equipment": [
+            "None"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-052.svg"
+        }
+    },
+    {
+        "id": "ex-053",
+        "name": "Leg press",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Adductors"
+            ]
+        },
+        "equipment": [
+            "Leg press machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-053.svg"
+        }
+    },
+    {
+        "id": "ex-054",
+        "name": "Hack squat",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Adductors"
+            ]
+        },
+        "equipment": [
+            "Hack squat machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-054.svg"
+        }
+    },
+    {
+        "id": "ex-055",
+        "name": "Leg extension",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Leg extension machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-055.svg"
+        }
+    },
+    {
+        "id": "ex-056",
+        "name": "Walking lunge",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Hamstrings",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "None"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-056.svg"
+        }
+    },
+    {
+        "id": "ex-057",
+        "name": "Reverse lunge",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Hamstrings",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "None"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-057.svg"
+        }
+    },
+    {
+        "id": "ex-058",
+        "name": "Bulgarian split squat",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Adductors",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Bench or raised platform"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-058.svg"
+        }
+    },
+    {
+        "id": "ex-059",
+        "name": "Step-up",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Calves",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Box or raised platform"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-059.svg"
+        }
+    },
+    {
+        "id": "ex-060",
+        "name": "Barbell Romanian deadlift",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Hamstrings"
+            ],
+            "secondary": [
+                "Glutes",
+                "Spinal erectors",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Barbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-060.svg"
+        }
+    },
+    {
+        "id": "ex-061",
+        "name": "Lying leg curl",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Hamstrings"
+            ],
+            "secondary": [
+                "Calves"
+            ]
+        },
+        "equipment": [
+            "Lying leg curl machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-061.svg"
+        }
+    },
+    {
+        "id": "ex-062",
+        "name": "Seated leg curl",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Hamstrings"
+            ],
+            "secondary": [
+                "Calves"
+            ]
+        },
+        "equipment": [
+            "Seated leg curl machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-062.svg"
+        }
+    },
+    {
+        "id": "ex-063",
+        "name": "Barbell hip thrust",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Glutes"
+            ],
+            "secondary": [
+                "Hamstrings",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Barbell",
+            "Flat bench"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-063.svg"
+        }
+    },
+    {
+        "id": "ex-064",
+        "name": "Glute bridge",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Glutes"
+            ],
+            "secondary": [
+                "Hamstrings",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "None",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-064.svg"
+        }
+    },
+    {
+        "id": "ex-065",
+        "name": "Cable glute kickback",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Glutes"
+            ],
+            "secondary": [
+                "Hamstrings",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Cable machine",
+            "Ankle strap"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-065.svg"
+        }
+    },
+    {
+        "id": "ex-066",
+        "name": "Machine hip abduction",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Glutes"
+            ],
+            "secondary": [
+                "Hip abductors"
+            ]
+        },
+        "equipment": [
+            "Hip abduction machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-066.svg"
+        }
+    },
+    {
+        "id": "ex-067",
+        "name": "Standing calf raise",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Calves"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Standing calf raise machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-067.svg"
+        }
+    },
+    {
+        "id": "ex-068",
+        "name": "Seated calf raise",
+        "type": "Strength",
+        "category": "Legs and glutes",
+        "muscleGroups": {
+            "primary": [
+                "Calves"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Seated calf raise machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-068.svg"
+        }
+    },
+    {
+        "id": "ex-069",
+        "name": "Crunch",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Abs"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "None",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-069.svg"
+        }
+    },
+    {
+        "id": "ex-070",
+        "name": "Cable crunch",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Abs"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Cable machine",
+            "Rope attachment"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-070.svg"
+        }
+    },
+    {
+        "id": "ex-071",
+        "name": "Machine abdominal crunch",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Abs"
+            ],
+            "secondary": []
+        },
+        "equipment": [
+            "Abdominal crunch machine"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-071.svg"
+        }
+    },
+    {
+        "id": "ex-072",
+        "name": "Reverse crunch",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Abs"
+            ],
+            "secondary": [
+                "Hip flexors"
+            ]
+        },
+        "equipment": [
+            "None",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-072.svg"
+        }
+    },
+    {
+        "id": "ex-073",
+        "name": "Hanging knee raise",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Abs"
+            ],
+            "secondary": [
+                "Hip flexors",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Pull-up bar"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-073.svg"
+        }
+    },
+    {
+        "id": "ex-074",
+        "name": "Hanging leg raise",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Abs"
+            ],
+            "secondary": [
+                "Hip flexors",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Pull-up bar"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-074.svg"
+        }
+    },
+    {
+        "id": "ex-075",
+        "name": "Lying leg raise",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Hip flexors"
+            ],
+            "secondary": [
+                "Abs"
+            ]
+        },
+        "equipment": [
+            "None",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-075.svg"
+        }
+    },
+    {
+        "id": "ex-076",
+        "name": "Plank",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Core"
+            ],
+            "secondary": [
+                "Shoulders",
+                "Glutes"
+            ]
+        },
+        "equipment": [
+            "None",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "timed_hold",
+        "preview": {
+            "file": "exercise-076.svg"
+        }
+    },
+    {
+        "id": "ex-077",
+        "name": "Side plank",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Obliques"
+            ],
+            "secondary": [
+                "Core",
+                "Shoulders",
+                "Glutes"
+            ]
+        },
+        "equipment": [
+            "None",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "timed_hold",
+        "preview": {
+            "file": "exercise-077.svg"
+        }
+    },
+    {
+        "id": "ex-078",
+        "name": "Russian twist",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Obliques"
+            ],
+            "secondary": [
+                "Abs"
+            ]
+        },
+        "equipment": [
+            "None",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-078.svg"
+        }
+    },
+    {
+        "id": "ex-079",
+        "name": "Bicycle crunch",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Abs"
+            ],
+            "secondary": [
+                "Obliques",
+                "Hip flexors"
+            ]
+        },
+        "equipment": [
+            "None",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-079.svg"
+        }
+    },
+    {
+        "id": "ex-080",
+        "name": "Ab wheel rollout",
+        "type": "Strength",
+        "category": "Core",
+        "muscleGroups": {
+            "primary": [
+                "Core"
+            ],
+            "secondary": [
+                "Lats",
+                "Shoulders"
+            ]
+        },
+        "equipment": [
+            "Ab wheel",
+            "Mat (optional)"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-080.svg"
+        }
+    },
+    {
+        "id": "ex-081",
+        "name": "Treadmill walking",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Calves",
+                "Hamstrings"
+            ]
+        },
+        "equipment": [
+            "Treadmill"
+        ],
+        "trackingFormat": "time_distance",
+        "preview": {
+            "file": "exercise-081.svg"
+        }
+    },
+    {
+        "id": "ex-082",
+        "name": "Treadmill running",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Calves",
+                "Hamstrings",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Treadmill"
+        ],
+        "trackingFormat": "time_distance",
+        "preview": {
+            "file": "exercise-082.svg"
+        }
+    },
+    {
+        "id": "ex-083",
+        "name": "Outdoor walking",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Calves",
+                "Hamstrings"
+            ]
+        },
+        "equipment": [
+            "None"
+        ],
+        "trackingFormat": "time_distance",
+        "preview": {
+            "file": "exercise-083.svg"
+        }
+    },
+    {
+        "id": "ex-084",
+        "name": "Outdoor running",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Calves",
+                "Hamstrings",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "None"
+        ],
+        "trackingFormat": "time_distance",
+        "preview": {
+            "file": "exercise-084.svg"
+        }
+    },
+    {
+        "id": "ex-085",
+        "name": "Stationary cycling",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Hamstrings",
+                "Calves"
+            ]
+        },
+        "equipment": [
+            "Stationary bike"
+        ],
+        "trackingFormat": "time_distance",
+        "preview": {
+            "file": "exercise-085.svg"
+        }
+    },
+    {
+        "id": "ex-086",
+        "name": "Outdoor cycling",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Hamstrings",
+                "Calves"
+            ]
+        },
+        "equipment": [
+            "Bicycle"
+        ],
+        "trackingFormat": "time_distance",
+        "preview": {
+            "file": "exercise-086.svg"
+        }
+    },
+    {
+        "id": "ex-087",
+        "name": "Elliptical",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Hamstrings",
+                "Calves",
+                "Shoulders"
+            ]
+        },
+        "equipment": [
+            "Elliptical machine"
+        ],
+        "trackingFormat": "time_distance",
+        "preview": {
+            "file": "exercise-087.svg"
+        }
+    },
+    {
+        "id": "ex-088",
+        "name": "Stair climber",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Calves",
+                "Hamstrings"
+            ]
+        },
+        "equipment": [
+            "Stair climber"
+        ],
+        "trackingFormat": "time",
+        "preview": {
+            "file": "exercise-088.svg"
+        }
+    },
+    {
+        "id": "ex-089",
+        "name": "Rowing machine",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Back",
+                "Arms",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Rowing machine"
+        ],
+        "trackingFormat": "time_distance",
+        "preview": {
+            "file": "exercise-089.svg"
+        }
+    },
+    {
+        "id": "ex-090",
+        "name": "Jump rope",
+        "type": "Cardio",
+        "category": "Cardio",
+        "muscleGroups": {
+            "primary": [
+                "Calves"
+            ],
+            "secondary": [
+                "Quadriceps",
+                "Shoulders",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Jump rope"
+        ],
+        "trackingFormat": "time",
+        "preview": {
+            "file": "exercise-090.svg"
+        }
+    },
+    {
+        "id": "ex-091",
+        "name": "Barbell deadlift",
+        "type": "Strength",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Glutes"
+            ],
+            "secondary": [
+                "Hamstrings",
+                "Quadriceps",
+                "Spinal erectors",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Barbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-091.svg"
+        }
+    },
+    {
+        "id": "ex-092",
+        "name": "Trap bar deadlift",
+        "type": "Strength",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Hamstrings",
+                "Spinal erectors",
+                "Forearms"
+            ]
+        },
+        "equipment": [
+            "Trap bar"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-092.svg"
+        }
+    },
+    {
+        "id": "ex-093",
+        "name": "Kettlebell swing",
+        "type": "Conditioning",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Glutes"
+            ],
+            "secondary": [
+                "Hamstrings",
+                "Core",
+                "Shoulders"
+            ]
+        },
+        "equipment": [
+            "Kettlebell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-093.svg"
+        }
+    },
+    {
+        "id": "ex-094",
+        "name": "Dumbbell clean and press",
+        "type": "Strength",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Shoulders"
+            ],
+            "secondary": [
+                "Glutes",
+                "Quadriceps",
+                "Triceps",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-094.svg"
+        }
+    },
+    {
+        "id": "ex-095",
+        "name": "Burpee",
+        "type": "Conditioning",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Chest"
+            ],
+            "secondary": [
+                "Quadriceps",
+                "Glutes",
+                "Triceps",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "None"
+        ],
+        "trackingFormat": "bodyweight_reps",
+        "preview": {
+            "file": "exercise-095.svg"
+        }
+    },
+    {
+        "id": "ex-096",
+        "name": "Dumbbell thruster",
+        "type": "Strength",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Shoulders",
+                "Glutes",
+                "Triceps",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Dumbbell"
+        ],
+        "trackingFormat": "weight_reps",
+        "preview": {
+            "file": "exercise-096.svg"
+        }
+    },
+    {
+        "id": "ex-097",
+        "name": "Farmer’s carry",
+        "type": "Conditioning",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Forearms"
+            ],
+            "secondary": [
+                "Traps",
+                "Core",
+                "Legs"
+            ]
+        },
+        "equipment": [
+            "Dumbbell",
+            "Kettlebell"
+        ],
+        "trackingFormat": "weight_distance",
+        "preview": {
+            "file": "exercise-097.svg"
+        }
+    },
+    {
+        "id": "ex-098",
+        "name": "Sled push",
+        "type": "Conditioning",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Calves",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Sled"
+        ],
+        "trackingFormat": "weight_distance",
+        "preview": {
+            "file": "exercise-098.svg"
+        }
+    },
+    {
+        "id": "ex-099",
+        "name": "Sled pull",
+        "type": "Conditioning",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Quadriceps"
+            ],
+            "secondary": [
+                "Glutes",
+                "Back",
+                "Arms",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Sled",
+            "Strap or rope"
+        ],
+        "trackingFormat": "weight_distance",
+        "preview": {
+            "file": "exercise-099.svg"
+        }
+    },
+    {
+        "id": "ex-100",
+        "name": "Battle ropes",
+        "type": "Conditioning",
+        "category": "Full body and conditioning",
+        "muscleGroups": {
+            "primary": [
+                "Shoulders"
+            ],
+            "secondary": [
+                "Forearms",
+                "Arms",
+                "Core"
+            ]
+        },
+        "equipment": [
+            "Battle ropes"
+        ],
+        "trackingFormat": "time",
+        "preview": {
+            "file": "exercise-100.svg"
+        }
+    }
+]
