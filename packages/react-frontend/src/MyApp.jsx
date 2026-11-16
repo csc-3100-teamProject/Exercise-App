@@ -245,7 +245,16 @@ function UserPages({ user, onLogout }) {
 function MyApp() {
     const [user, setUser] = useState(devUser)
 
-    if (!user) return <LoginPage onLogin={setUser} />
+    if (!user) {
+    return (
+        <LoginPage
+            onLogin={(loggedInUser) => {
+                localStorage.setItem('token', loggedInUser.token)
+                setUser(loggedInUser)
+            }}
+            />
+        )
+    }
 
     return (
         <UserPages key={user.id} user={user} onLogout={() => setUser(null)} />
