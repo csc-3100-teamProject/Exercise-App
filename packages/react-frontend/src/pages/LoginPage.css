@@ -104,3 +104,22 @@ body {
     opacity: 0.6;
     cursor: wait;
 }
+
+.forgot-password {
+    margin: 4px 0 8px;
+    text-align: right;
+}
+
+.forgot-password button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #baff29;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.forgot-password button:hover {
+    text-decoration: underline;
+}
