@@ -1,7 +1,9 @@
 import './LoginPage.css'
 import { useState } from 'react'
 
-const API_URL = 'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
+const API_URL =
+    import.meta.env.VITE_API_URL ??
+    'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
 
 function LoginPage({ onLogin }) {
     const [isSigningUp, setIsSigningUp] = useState(false)
