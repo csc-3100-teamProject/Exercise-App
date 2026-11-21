@@ -72,7 +72,7 @@ function Avatar({ name, large = false }) {
     )
 }
 
-function ProfileCard({ user }) {
+function ProfileCard({ user, onEdit }) {
     return (
         <section className="profile-card" aria-label="Your profile">
             <div className="profile-card-top">
@@ -83,6 +83,9 @@ function ProfileCard({ user }) {
                     <span className="level-badge">{user.level} athlete</span>
                 </div>
             </div>
+            <button type="button" className="edit-button" onClick={onEdit}>
+                Edit profile
+            </button>
         </section>
     )
 }
@@ -408,11 +411,192 @@ function FriendsTab({ userId, onChanged }) {
     )
 }
 
+const LEVELS = ['Beginner', 'Intermediate', 'Advanced']
+const UNITS = ['Imperial', 'Metric']
+const EQUIPMENT = ['Full gym', 'Home gym', 'Dumbbells only', 'Bodyweight only']
+const BIO_LIMIT = 200
+
+function EditProfile({ user, userId, onSaved, onCancel }) {
+    const [form, setForm] = useState({
+        fullName: user.fullName,
+        email: user.email,
+        level: user.level,
+        units: user.units,
+        weeklyGoal: String(user.weeklyGoal),
+        equipment: user.equipment,
+        bio: user.bio,
+    })
+    const [error, setError] = useState('')
+    const [saving, setSaving] = useState(false)
+
+    function update(event) {
+        const { name, value } = event.target
+        setForm((current) => ({ ...current, [name]: value }))
+        setError('')
+    }
+
+    async function save(event) {
+        event.preventDefault()
+        if (saving) return
+        const goal = Number(form.weeklyGoal)
+        if (!Number.isInteger(goal) || goal < 1 || goal > 7) {
+            setError('Weekly goal must be a whole number from 1 to 7.')
+            return
+        }
+        setSaving(true)
+        try {
+            const response = await fetch(`${API}/users/${userId}/profile`, {
+                method: 'PATCH',
+                headers: authHeaders(),
+                body: JSON.stringify({
+                    ...form,
+                    fullName: form.fullName.trim(),
+                    email: form.email.trim(),
+                    weeklyGoal: goal,
+                }),
+            })
+            if (response.status === 409) {
+                throw new Error('That email is already in use.')
+            }
+            if (response.status === 400) {
+                throw new Error('Check your details and try again.')
+            }
+            if (!response.ok) {
+                throw new Error(
+                    'Could not save your profile. Please try again.'
+                )
+            }
+            onSaved()
+        } catch (err) {
+            setError(
+                err instanceof TypeError
+                    ? 'Could not connect to the server. Please try again.'
+                    : err.message
+            )
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    return (
+        <form className="edit-card" onSubmit={save}>
+            <div className="photo-row">
+                <Avatar name={form.fullName || user.displayName} large />
+                <div>
+                    <strong>Profile photo</strong>
+                    <p className="feed-meta">
+                        Photo uploads can be connected later
+                    </p>
+                </div>
+            </div>
+
+            <div className="edit-fields">
+                <label htmlFor="edit-name">Full name</label>
+                <input
+                    id="edit-name"
+                    name="fullName"
+                    value={form.fullName}
+                    onChange={update}
+                    maxLength={60}
+                />
+
+                <label htmlFor="edit-email">Email</label>
+                <input
+                    id="edit-email"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={update}
+                    required
+                />
+
+                <label htmlFor="edit-level">Experience</label>
+                <select
+                    id="edit-level"
+                    name="level"
+                    value={form.level}
+                    onChange={update}
+                >
+                    {LEVELS.map((level) => (
+                        <option key={level}>{level}</option>
+                    ))}
+                </select>
+
+                <label htmlFor="edit-units">Preferred units</label>
+                <select
+                    id="edit-units"
+                    name="units"
+                    value={form.units}
+                    onChange={update}
+                >
+                    {UNITS.map((unit) => (
+                        <option key={unit}>{unit}</option>
+                    ))}
+                </select>
+
+                <label htmlFor="edit-goal">Weekly workout goal</label>
+                <input
+                    id="edit-goal"
+                    name="weeklyGoal"
+                    type="number"
+                    inputMode="numeric"
+                    min="1"
+                    max="7"
+                    value={form.weeklyGoal}
+                    onChange={update}
+                    required
+                />
+
+                <label htmlFor="edit-equipment">Available equipment</label>
+                <select
+                    id="edit-equipment"
+                    name="equipment"
+                    value={form.equipment}
+                    onChange={update}
+                >
+                    {EQUIPMENT.map((item) => (
+                        <option key={item}>{item}</option>
+                    ))}
+                </select>
+
+                <label htmlFor="edit-bio">Bio</label>
+                <textarea
+                    id="edit-bio"
+                    name="bio"
+                    rows="4"
+                    maxLength={BIO_LIMIT}
+                    value={form.bio}
+                    onChange={update}
+                />
+                <p className="char-count">
+                    {form.bio.length}/{BIO_LIMIT}
+                </p>
+            </div>
+
+            {error && (
+                <p className="form-error" role="alert">
+                    {error}
+                </p>
+            )}
+
+            <div className="edit-actions">
+                <button type="button" onClick={onCancel}>
+                    Cancel
+                </button>
+                <button type="submit" className="primary" disabled={saving}>
+                    {saving ? 'Saving...' : 'Save changes'}
+                </button>
+            </div>
+        </form>
+    )
+}
+
 function ProfilePage({ user, onNavigate, onLogout }) {
     const [profile, setProfile] = useState(null)
     const [error, setError] = useState('')
     const [tab, setTab] = useState('profile')
     const [reloadKey, setReloadKey] = useState(0)
+    const [editing, setEditing] = useState(false)
 
     useEffect(() => {
         const controller = new AbortController()
@@ -439,29 +623,31 @@ function ProfilePage({ user, onNavigate, onLogout }) {
     return (
         <main className="profile-page">
             <div className="profile-content">
-                <h1>Profile</h1>
+                <h1>{editing ? 'Edit profile' : 'Profile'}</h1>
 
-                <div className="profile-tabs" role="tablist">
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={tab === 'profile'}
-                        className={tab === 'profile' ? 'tab-active' : ''}
-                        onClick={() => setTab('profile')}
-                    >
-                        Profile
-                    </button>
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={tab === 'friends'}
-                        className={tab === 'friends' ? 'tab-active' : ''}
-                        onClick={() => setTab('friends')}
-                    >
-                        Friends
-                        {profile && <span>{profile.friendsCount}</span>}
-                    </button>
-                </div>
+                {!editing && (
+                    <div className="profile-tabs" role="tablist">
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={tab === 'profile'}
+                            className={tab === 'profile' ? 'tab-active' : ''}
+                            onClick={() => setTab('profile')}
+                        >
+                            Profile
+                        </button>
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={tab === 'friends'}
+                            className={tab === 'friends' ? 'tab-active' : ''}
+                            onClick={() => setTab('friends')}
+                        >
+                            Friends
+                            {profile && <span>{profile.friendsCount}</span>}
+                        </button>
+                    </div>
+                )}
 
                 {error && (
                     <p className="form-error" role="alert">
@@ -474,9 +660,24 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                     </p>
                 )}
 
-                {profile && tab === 'profile' && (
+                {profile && editing && (
+                    <EditProfile
+                        user={profile.user}
+                        userId={user.id}
+                        onCancel={() => setEditing(false)}
+                        onSaved={() => {
+                            setEditing(false)
+                            setReloadKey((key) => key + 1)
+                        }}
+                    />
+                )}
+
+                {profile && !editing && tab === 'profile' && (
                     <>
-                        <ProfileCard user={profile.user} />
+                        <ProfileCard
+                            user={profile.user}
+                            onEdit={() => setEditing(true)}
+                        />
                         <Stats stats={profile.stats} />
                         <Feed
                             feed={profile.feed}
@@ -492,7 +693,7 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                     </>
                 )}
 
-                {tab === 'friends' && (
+                {!editing && tab === 'friends' && (
                     <FriendsTab
                         userId={user.id}
                         onChanged={() => setReloadKey((key) => key + 1)}
