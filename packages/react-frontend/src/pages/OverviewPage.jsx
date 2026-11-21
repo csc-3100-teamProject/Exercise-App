@@ -413,8 +413,11 @@ function OverviewPage({ user, onStart, onAdd, onNavigate }) {
                             <h2 id="today-heading">Today’s plan</h2>
                             <div className="section-sub">
                                 <p>{planSummary(overview.todaysPlan)}</p>
-                                <button type="button" className="link-button">
+                                <button
+                                    type="button"
+                                    className="link-button"
                                     onClick={() => onNavigate('calendar')}
+                                >
                                     View calendar
                                 </button>
                             </div>
