@@ -1,210 +1,241 @@
-import { useEffect, useState } from 'react'
 import './ProfilePage.css'
+import { useEffect, useState } from 'react'
+import BottomNav from '../components/BottomNav'
 
-const API = 'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
+const API =
+    import.meta.env.VITE_API_URL ??
+    'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
 
-const NAV_ITEMS = [
-    ['home', 'Overview'],
-    ['calendar', 'Calendar'],
-    ['routines', 'Routines'],
-    ['progress', 'Progress'],
-    ['profile', 'Profile'],
-]
+function localDateString(date = new Date()) {
+    return date.toLocaleDateString('en-CA') // YYYY-MM-DD
+}
 
-function Icon({ name }) {
-    const paths = {
-        home: (
-            <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
-        ),
-        calendar: (
-            <>
-                <rect x="3" y="4" width="18" height="17" rx="2" />
-                <path d="M3 9h18M8 2v4M16 2v4" />
-            </>
-        ),
-        routines: (
-            <>
-                <rect x="4" y="3" width="16" height="18" rx="2" />
-                <path d="M8 8h8M8 12h8M8 16h5" />
-            </>
-        ),
-        progress: <path d="M4 20V10M9 20V4M14 20v-8M19 20V8M2 20h20" />,
-        profile: (
-            <>
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 21a8 8 0 0 1 16 0" />
-            </>
-        ),
+function authHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
     }
+}
 
+function initials(name) {
+    const words = name.trim().split(/\s+/)
+    const letters =
+        words.length > 1 ? words[0][0] + words[1][0] : name.trim().slice(0, 2)
+    return letters.toUpperCase()
+}
+
+function formatClock(date) {
+    return date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+    })
+}
+
+function formatWhen(at, now = new Date()) {
+    const date = new Date(at)
+    const minutes = Math.round((now - date) / 60000)
+    if (minutes < 1) return 'Just now'
+    if (minutes < 60) return `${minutes} min ago`
+    const startOfDay = (d) =>
+        new Date(d.getFullYear(), d.getMonth(), d.getDate())
+    const dayDiff = Math.round((startOfDay(now) - startOfDay(date)) / 86400000)
+    if (dayDiff === 0) {
+        return minutes < 360
+            ? `${Math.floor(minutes / 60)} hr ago`
+            : `Today at ${formatClock(date)}`
+    }
+    if (dayDiff === 1) return `Yesterday at ${formatClock(date)}`
+    return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+    })
+}
+
+function feedMeta(item) {
+    const parts = []
+    if (item.distanceMi) parts.push(`${item.distanceMi} miles`)
+    parts.push(`${item.durationMin} min`)
+    if (item.volume) parts.push(`${item.volume.toLocaleString()} lb volume`)
+    parts.push(formatWhen(item.at))
+    return parts.join(' · ')
+}
+
+function Avatar({ name, large = false }) {
     return (
-        <svg
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <span
+            className={`avatar${large ? ' avatar-large' : ''}`}
             aria-hidden="true"
         >
-            {paths[name]}
-        </svg>
+            {initials(name)}
+        </span>
+    )
+}
+
+function ProfileCard({ user }) {
+    return (
+        <section className="profile-card" aria-label="Your profile">
+            <div className="profile-card-top">
+                <Avatar name={user.displayName} large />
+                <div>
+                    <h2>{user.displayName}</h2>
+                    <p className="profile-email">{user.email}</p>
+                    <span className="level-badge">{user.level} athlete</span>
+                </div>
+            </div>
+        </section>
+    )
+}
+
+function Stats({ stats }) {
+    const items = [
+        [stats.workouts, 'Workouts'],
+        [stats.weekStreak, 'Week streak'],
+        [stats.personalRecords, 'Personal records'],
+    ]
+    return (
+        <div className="stat-grid">
+            {items.map(([value, label]) => (
+                <div className="stat-tile" key={label}>
+                    <strong>{value}</strong>
+                    <span>{label}</span>
+                </div>
+            ))}
+        </div>
+    )
+}
+
+function Feed({ feed, onFindFriends }) {
+    return (
+        <section aria-labelledby="feed-heading">
+            <div className="feed-header">
+                <h2 id="feed-heading">Your feed</h2>
+                <button
+                    type="button"
+                    className="find-friends"
+                    onClick={onFindFriends}
+                >
+                    Find friends <span aria-hidden="true">›</span>
+                </button>
+            </div>
+            <div className="feed-list">
+                {feed.length === 0 && (
+                    <p className="empty-text">
+                        Completed workouts from you and your friends show up
+                        here.
+                    </p>
+                )}
+                {feed.map((item) => (
+                    <article className="feed-item" key={item.id}>
+                        <Avatar name={item.name} />
+                        <div>
+                            <p className="feed-title">
+                                <strong>
+                                    {item.isYou ? 'You' : item.name}
+                                </strong>{' '}
+                                completed <strong>{item.workout}</strong>
+                            </p>
+                            <p className="feed-meta">{feedMeta(item)}</p>
+                            {item.notes && (
+                                <p className="feed-notes">{item.notes}</p>
+                            )}
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </section>
     )
 }
 
 function ProfilePage({ user, onNavigate, onLogout }) {
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [editing, setEditing] = useState(false)
-    const [loading, setLoading] = useState(true)
-    const [saving, setSaving] = useState(false)
+    const [profile, setProfile] = useState(null)
     const [error, setError] = useState('')
-    const [message, setMessage] = useState('')
+    const [tab, setTab] = useState('profile')
 
     useEffect(() => {
-        fetch(`${API}/users/${user.id}/profile`)
-            .then((res) => {
-                if (!res.ok) throw new Error('Failed to load profile')
-                return res.json()
+        const controller = new AbortController()
+        fetch(`${API}/users/${user.id}/profile?date=${localDateString()}`, {
+            headers: authHeaders(),
+            signal: controller.signal,
+        })
+            .then((response) => {
+                if (!response.ok) throw new Error('Request failed')
+                return response.json()
             })
             .then((data) => {
-                setUsername(data.username)
-                setEmail(data.email)
+                setProfile(data)
+                setError('')
             })
-            .catch(() => setError('Could not load profile'))
-            .finally(() => setLoading(false))
+            .catch((err) => {
+                if (err.name !== 'AbortError') {
+                    setError('Could not load your profile. Please try again.')
+                }
+            })
+        return () => controller.abort()
     }, [user.id])
-
-    async function saveProfile(e) {
-        e.preventDefault()
-        setError('')
-        setMessage('')
-        setSaving(true)
-
-        try {
-            const res = await fetch(`${API}/users/${user.id}/profile`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email }),
-            })
-
-            if (!res.ok) {
-                throw new Error('Could not save profile')
-            }
-
-            const updated = await res.json()
-            setUsername(updated.username)
-            setEmail(updated.email)
-            setEditing(false)
-            setMessage('Profile updated successfully')
-        } catch {
-            setError('Could not save profile. Please try again.')
-        } finally {
-            setSaving(false)
-        }
-    }
 
     return (
         <main className="profile-page">
             <div className="profile-content">
                 <h1>Profile</h1>
 
-                {loading ? (
-                    <p>Loading...</p>
-                ) : (
+                <div className="profile-tabs" role="tablist">
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={tab === 'profile'}
+                        className={tab === 'profile' ? 'tab-active' : ''}
+                        onClick={() => setTab('profile')}
+                    >
+                        Profile
+                    </button>
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={tab === 'friends'}
+                        className={tab === 'friends' ? 'tab-active' : ''}
+                        onClick={() => setTab('friends')}
+                    >
+                        Friends
+                        {profile && <span>{profile.friendsCount}</span>}
+                    </button>
+                </div>
+
+                {error && (
+                    <p className="form-error" role="alert">
+                        {error}
+                    </p>
+                )}
+                {!profile && !error && (
+                    <p className="muted" role="status">
+                        Loading...
+                    </p>
+                )}
+
+                {profile && tab === 'profile' && (
                     <>
-                        <div className="profile-header">
-                            <div className="profile-avatar">
-                                {username.charAt(0).toUpperCase()}
-                            </div>
-                            <h2>{username}</h2>
-                            <p>{email}</p>
-                        </div>
-
-                        <form className="profile-card" onSubmit={saveProfile}>
-                            <div className="profile-card-header">
-                                <h2>Personal information</h2>
-
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setEditing(!editing)
-                                        setMessage('')
-                                    }}
-                                >
-                                    {editing ? 'Cancel' : 'Edit'}
-                                </button>
-                            </div>
-
-                            <label htmlFor="profile-username">Username</label>
-
-                            <input
-                                id="profile-username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                disabled={!editing}
-                                required
-                            />
-
-                            <label htmlFor="profile-email">Email</label>
-
-                            <input
-                                id="profile-email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                disabled={!editing}
-                                required
-                            />
-
-                            {editing && (
-                                <button
-                                    className="profile-save"
-                                    type="submit"
-                                    disabled={saving}
-                                >
-                                    {saving ? 'Saving...' : 'Save changes'}
-                                </button>
-                            )}
-                        </form>
-
-                        {error && (
-                            <p className="profile-error" role="alert">
-                                {error}
-                            </p>
-                        )}
-
-                        {message && (
-                            <p className="profile-success">{message}</p>
-                        )}
-
+                        <ProfileCard user={profile.user} />
+                        <Stats stats={profile.stats} />
+                        <Feed
+                            feed={profile.feed}
+                            onFindFriends={() => setTab('friends')}
+                        />
                         <button
-                            className="profile-logout"
                             type="button"
+                            className="logout-button"
                             onClick={onLogout}
                         >
                             Log out
                         </button>
                     </>
                 )}
+
+                {profile && tab === 'friends' && (
+                    <p className="empty-text">Friends are coming soon.</p>
+                )}
             </div>
 
-            <nav className="profile-nav" aria-label="Main">
-                {NAV_ITEMS.map(([icon, label]) => (
-                    <button
-                        key={label}
-                        type="button"
-                        className={label === 'Profile' ? 'nav-active' : ''}
-                        aria-current={label === 'Profile' ? 'page' : undefined}
-                        onClick={() => onNavigate?.(label.toLowerCase())}
-                    >
-                        <Icon name={icon} />
-                        <span>{label}</span>
-                    </button>
-                ))}
-            </nav>
+            <BottomNav active="profile" onNavigate={onNavigate} />
         </main>
     )
 }
