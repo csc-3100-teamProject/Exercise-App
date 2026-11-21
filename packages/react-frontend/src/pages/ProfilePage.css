@@ -266,3 +266,144 @@
     border-radius: 12px;
     font-weight: 700;
 }
+
+/* Friends tab */
+.friends-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.requests-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px;
+    background: linear-gradient(120deg, #1a2410, var(--panel) 70%);
+    color: #f5f7fa;
+    border: 1px solid #2b3a14;
+    border-radius: 20px;
+    text-align: left;
+}
+
+.requests-banner strong {
+    display: block;
+    font-size: 15px;
+}
+
+.requests-banner small {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.requests-count {
+    display: grid;
+    place-items: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    background: var(--lime);
+    color: var(--bg);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.people-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+}
+
+.people-search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px;
+    padding: 0 16px;
+    background: #181d23;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.people-search:focus-within {
+    outline: 2px solid var(--lime);
+    outline-offset: 1px;
+}
+
+.people-search input {
+    flex: 1;
+    min-width: 0;
+    padding: 16px 0;
+    background: none;
+    color: #f5f7fa;
+    border: 0;
+    font: inherit;
+    font-size: 15px;
+    outline: none;
+}
+
+.people-search input::placeholder {
+    color: var(--muted);
+}
+
+.person-row,
+.request-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+}
+
+.request-row {
+    flex-wrap: wrap;
+}
+
+.request-row > div:nth-child(2) {
+    flex: 1;
+}
+
+.request-actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.request-actions .person-button {
+    flex: 1;
+}
+
+.person-row > div:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+}
+
+.person-button {
+    padding: 12px 18px;
+    background: #1c212a;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.person-button:disabled {
+    cursor: default;
+}
+
+.person-add {
+    background: var(--lime);
+    border-color: var(--lime);
+    color: var(--bg);
+}
+
+.person-remove {
+    color: #ff8a6b;
+    border-color: #4a2a22;
+}

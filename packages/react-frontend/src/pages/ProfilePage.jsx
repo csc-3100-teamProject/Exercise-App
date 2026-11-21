@@ -147,10 +147,272 @@ function Feed({ feed, onFindFriends }) {
     )
 }
 
+function SearchIcon() {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+        </svg>
+    )
+}
+
+function personSubtext(person) {
+    if (person.status !== 'friend' && person.mutualFriends > 0) {
+        return `${person.mutualFriends} mutual friend${person.mutualFriends === 1 ? '' : 's'}`
+    }
+    return `${person.level} athlete`
+}
+
+function FriendsTab({ userId, onChanged }) {
+    const [query, setQuery] = useState('')
+    const [search, setSearch] = useState('')
+    const [reloadKey, setReloadKey] = useState(0)
+    const [requests, setRequests] = useState(null)
+    const [people, setPeople] = useState(null)
+    const [showRequests, setShowRequests] = useState(false)
+    const [confirmId, setConfirmId] = useState(null)
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        const timer = setTimeout(() => setSearch(query.trim()), 250)
+        return () => clearTimeout(timer)
+    }, [query])
+
+    useEffect(() => {
+        const controller = new AbortController()
+        const options = { headers: authHeaders(), signal: controller.signal }
+        Promise.all([
+            fetch(`${API}/users/${userId}/friends`, options),
+            fetch(
+                `${API}/users/${userId}/people?q=${encodeURIComponent(search)}`,
+                options
+            ),
+        ])
+            .then(async ([friendsResponse, peopleResponse]) => {
+                if (!friendsResponse.ok || !peopleResponse.ok) {
+                    throw new Error('Request failed')
+                }
+                setRequests((await friendsResponse.json()).requests)
+                setPeople(await peopleResponse.json())
+                setError('')
+            })
+            .catch((err) => {
+                if (err.name !== 'AbortError') {
+                    setError('Could not load friends. Please try again.')
+                }
+            })
+        return () => controller.abort()
+    }, [userId, search, reloadKey])
+
+    async function act(path, options, failure) {
+        setError('')
+        setConfirmId(null)
+        try {
+            const response = await fetch(`${API}/users/${userId}${path}`, {
+                ...options,
+                headers: authHeaders(),
+            })
+            if (!response.ok && response.status !== 409) throw new Error()
+            setReloadKey((key) => key + 1)
+            onChanged()
+        } catch {
+            setError(failure)
+        }
+    }
+
+    const accept = (requestId) =>
+        act(
+            `/friend-requests/${requestId}/accept`,
+            { method: 'POST' },
+            'Could not accept that request. Please try again.'
+        )
+    const decline = (requestId) =>
+        act(
+            `/friend-requests/${requestId}`,
+            { method: 'DELETE' },
+            'Could not decline that request. Please try again.'
+        )
+    const add = (person) =>
+        act(
+            '/friends',
+            { method: 'POST', body: JSON.stringify({ userId: person.id }) },
+            'Could not send that request. Please try again.'
+        )
+    const remove = (person) =>
+        act(
+            `/friends/${person.id}`,
+            { method: 'DELETE' },
+            'Could not remove that friend. Please try again.'
+        )
+
+    function personButton(person) {
+        const request = requests?.find((r) => r.id === person.id)
+        if (person.status === 'friend') {
+            return confirmId === person.id ? (
+                <button
+                    type="button"
+                    className="person-button person-remove"
+                    onClick={() => remove(person)}
+                >
+                    Remove
+                </button>
+            ) : (
+                <button
+                    type="button"
+                    className="person-button"
+                    onClick={() => setConfirmId(person.id)}
+                >
+                    Friends
+                </button>
+            )
+        }
+        if (person.status === 'sent') {
+            return (
+                <button type="button" className="person-button" disabled>
+                    Requested
+                </button>
+            )
+        }
+        if (person.status === 'received' && request) {
+            return (
+                <button
+                    type="button"
+                    className="person-button person-add"
+                    onClick={() => accept(request.requestId)}
+                >
+                    Accept
+                </button>
+            )
+        }
+        return (
+            <button
+                type="button"
+                className="person-button person-add"
+                onClick={() => add(person)}
+            >
+                Add
+            </button>
+        )
+    }
+
+    return (
+        <section aria-label="Friends" className="friends-tab">
+            {requests && requests.length > 0 && (
+                <>
+                    <button
+                        type="button"
+                        className="requests-banner"
+                        aria-expanded={showRequests}
+                        onClick={() => setShowRequests((open) => !open)}
+                    >
+                        <span>
+                            <strong>Friend requests</strong>
+                            <small>
+                                {requests.length} waiting for your response
+                            </small>
+                        </span>
+                        <span className="requests-count">
+                            {requests.length}
+                        </span>
+                    </button>
+                    {showRequests && (
+                        <div className="people-card">
+                            {requests.map((request) => (
+                                <div
+                                    className="request-row"
+                                    key={request.requestId}
+                                >
+                                    <Avatar name={request.name} />
+                                    <div>
+                                        <strong>{request.name}</strong>
+                                        <p className="feed-meta">
+                                            @{request.username}
+                                        </p>
+                                    </div>
+                                    <div className="request-actions">
+                                        <button
+                                            type="button"
+                                            className="person-button"
+                                            onClick={() =>
+                                                decline(request.requestId)
+                                            }
+                                        >
+                                            Decline
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="person-button person-add"
+                                            onClick={() =>
+                                                accept(request.requestId)
+                                            }
+                                        >
+                                            Accept
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </>
+            )}
+
+            <div className="people-card">
+                <label className="people-search">
+                    <SearchIcon />
+                    <input
+                        type="search"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Search people by name"
+                        aria-label="Search people by name"
+                    />
+                </label>
+                {!people && !error && (
+                    <p className="empty-text" role="status">
+                        Loading...
+                    </p>
+                )}
+                {people && people.length === 0 && (
+                    <p className="empty-text">
+                        {search ? 'No one found.' : 'No other people yet.'}
+                    </p>
+                )}
+                {people?.map((person) => (
+                    <div className="person-row" key={person.id}>
+                        <Avatar name={person.name} />
+                        <div>
+                            <strong>{person.name}</strong>
+                            <p className="feed-meta">{personSubtext(person)}</p>
+                        </div>
+                        {personButton(person)}
+                    </div>
+                ))}
+            </div>
+
+            {error && (
+                <p className="form-error" role="alert">
+                    {error}
+                </p>
+            )}
+        </section>
+    )
+}
+
 function ProfilePage({ user, onNavigate, onLogout }) {
     const [profile, setProfile] = useState(null)
     const [error, setError] = useState('')
     const [tab, setTab] = useState('profile')
+    const [reloadKey, setReloadKey] = useState(0)
 
     useEffect(() => {
         const controller = new AbortController()
@@ -172,7 +434,7 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                 }
             })
         return () => controller.abort()
-    }, [user.id])
+    }, [user.id, reloadKey])
 
     return (
         <main className="profile-page">
@@ -230,8 +492,11 @@ function ProfilePage({ user, onNavigate, onLogout }) {
                     </>
                 )}
 
-                {profile && tab === 'friends' && (
-                    <p className="empty-text">Friends are coming soon.</p>
+                {tab === 'friends' && (
+                    <FriendsTab
+                        userId={user.id}
+                        onChanged={() => setReloadKey((key) => key + 1)}
+                    />
                 )}
             </div>
 
