@@ -212,55 +212,100 @@ app.delete(
     }
 )
 
-app.get('/users/:id/profile', (req, res) => {
-    const id = req.params.id
-
-    if (!mongoose.isValidObjectId(id)) {
+// Profile routes are only available to the logged-in owner.
+function ownerOnly(req, res, next) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
         return res.status(404).send('User not found')
     }
-
-    functions
-        .getProfile(id)
-        .then((user) => {
-            if (user) res.status(200).json(user)
-            else res.status(404).send('User not found')
-        })
-        .catch((error) => {
-            res.status(500).send(error.name)
-        })
-})
-
-app.patch('/users/:id/profile', (req, res) => {
-    const id = req.params.id
-    const { username, email } = req.body ?? {}
-
-    if (!mongoose.isValidObjectId(id)) {
-        return res.status(404).send('User not found')
+    if (req.user.id !== req.params.id) {
+        return res.status(403).send('Forbidden')
     }
+    next()
+}
 
-    if (!isNonEmptyString(username) || !isNonEmptyString(email)) {
-        return res.status(400).send('Username and email are required')
-    }
-
-    functions
-        .updateProfile(id, {
-            username: username.trim(),
-            email: email.trim(),
-        })
-        .then((user) => {
-            if (user) res.status(200).json(user)
-            else res.status(404).send('User not found')
-        })
-        .catch((error) => {
-            if (error.code === 11000) {
-                res.status(409).send('Username or email already exists')
-            } else if (error.name === 'ValidationError') {
-                res.status(400).send(error.message)
-            } else {
+app.get(
+    '/users/:id/profile',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const today = req.query.date
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) {
+            return res.status(400).send('date must be YYYY-MM-DD')
+        }
+        functions
+            .getProfile(req.params.id, today)
+            .then((profile) => {
+                if (profile) res.status(200).json(profile)
+                else res.status(404).send('User not found')
+            })
+            .catch((error) => {
                 res.status(500).send(error.name)
-            }
-        })
-})
+            })
+    }
+)
+
+const { LEVELS, UNITS, EQUIPMENT } = functions.PROFILE_OPTIONS
+const EDITABLE_TEXT = { fullName: 60, bio: 200 }
+
+// Returns the cleaned updates, or null if any field is invalid.
+function cleanProfileUpdates(body) {
+    const updates = {}
+    for (const [field, max] of Object.entries(EDITABLE_TEXT)) {
+        if (body[field] === undefined) continue
+        if (typeof body[field] !== 'string' || body[field].length > max) {
+            return null
+        }
+        updates[field] = body[field].trim()
+    }
+    for (const field of ['username', 'email']) {
+        if (body[field] === undefined) continue
+        if (!isNonEmptyString(body[field])) return null
+        updates[field] = body[field].trim()
+    }
+    if (updates.email !== undefined && !/^\S+@\S+\.\S+$/.test(updates.email)) {
+        return null
+    }
+    const choices = { level: LEVELS, units: UNITS, equipment: EQUIPMENT }
+    for (const [field, allowed] of Object.entries(choices)) {
+        if (body[field] === undefined) continue
+        if (!allowed.includes(body[field])) return null
+        updates[field] = body[field]
+    }
+    if (body.weeklyGoal !== undefined) {
+        const goal = body.weeklyGoal
+        if (!Number.isInteger(goal) || goal < 1 || goal > 7) return null
+        updates.weeklyGoal = goal
+    }
+    return updates
+}
+
+app.patch(
+    '/users/:id/profile',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const updates = cleanProfileUpdates(req.body ?? {})
+        if (!updates) return res.status(400).send('Invalid profile fields')
+        functions
+            .updateProfile(req.params.id, updates)
+            .then((user) => {
+                if (user === 409) {
+                    res.status(409).send('Username or email already exists')
+                } else if (user) {
+                    res.status(200).json(user)
+                } else {
+                    res.status(404).send('User not found')
+                }
+            })
+            .catch((error) => {
+                if (error.name === 'ValidationError') {
+                    res.status(400).send(error.message)
+                } else {
+                    res.status(500).send(error.name)
+                }
+            })
+    }
+)
 
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']

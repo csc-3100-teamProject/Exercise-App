@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
-import userModel from './user.js'
+import userModel, { LEVELS, UNITS, EQUIPMENT } from './user.js'
 import workoutModel from './workout.js'
 import { buildOverview } from './overview.js'
+import { buildProfile, displayName } from './profile.js'
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
 dotenv.config()
@@ -177,19 +178,52 @@ function findWorkout(userId) {
     return workoutModel.find({ userId: userId })
 }
 
-async function getProfile(id) {
-    const user = await userModel.findById(id).select('username email')
-    return user
+// Ids of the other people whose workouts appear in this user's feed.
+async function getFeedUserIds() {
+    return []
 }
 
+async function getProfile(id, today) {
+    const user = await findUserById(id)
+    if (!user) return null
+    const friendIds = await getFeedUserIds(id)
+    const ids = [user._id, ...friendIds]
+    const [workouts, people] = await Promise.all([
+        workoutModel.find({ userId: { $in: ids }, completed: true }).lean(),
+        userModel.find({ _id: { $in: ids } }, 'username fullName').lean(),
+    ])
+    const names = Object.fromEntries(
+        people.map((p) => [String(p._id), displayName(p)])
+    )
+    return buildProfile({
+        user,
+        ownWorkouts: workouts.filter(
+            (w) => String(w.userId) === String(user._id)
+        ),
+        feedWorkouts: workouts,
+        names,
+        friendsCount: friendIds.length,
+        today,
+    })
+}
+
+// Returns the updated user, null if missing, or 409 if the username/email is
+// already taken. Invalid values throw a Mongoose ValidationError.
 async function updateProfile(id, updates) {
-    return userModel
-        .findByIdAndUpdate(
-            id,
-            { $set: updates },
-            { new: true, runValidators: true }
-        )
-        .select('username email')
+    const user = await findUserById(id)
+    if (!user) return null
+    for (const field of ['username', 'email']) {
+        const value = updates[field]
+        if (value !== undefined && value.trim() !== user[field]) {
+            const taken = await userModel.findOne({
+                [field]: value.trim(),
+                _id: { $ne: user._id },
+            })
+            if (taken) return 409
+        }
+    }
+    user.set(updates)
+    return user.save()
 }
 
 export default {
@@ -210,4 +244,5 @@ export default {
     findWorkout,
     getProfile,
     updateProfile,
+    PROFILE_OPTIONS: { LEVELS, UNITS, EQUIPMENT },
 }
