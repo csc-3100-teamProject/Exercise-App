@@ -307,6 +307,109 @@ app.patch(
     }
 )
 
+const idParam = (value) => mongoose.isValidObjectId(value)
+
+function sendOrNotFound(res, result, notFound = 'Not found') {
+    if (result) res.status(200).json(result)
+    else res.status(404).send(notFound)
+}
+
+app.get(
+    '/users/:id/friends',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        functions
+            .getFriends(req.params.id)
+            .then((result) => sendOrNotFound(res, result, 'User not found'))
+            .catch((error) => res.status(500).send(error.name))
+    }
+)
+
+app.get(
+    '/users/:id/people',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const query = typeof req.query.q === 'string' ? req.query.q : ''
+        functions
+            .searchPeople(req.params.id, query)
+            .then((result) => sendOrNotFound(res, result, 'User not found'))
+            .catch((error) => res.status(500).send(error.name))
+    }
+)
+
+app.post(
+    '/users/:id/friends',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const { userId } = req.body ?? {}
+        if (!idParam(userId)) return res.status(400).send('userId is required')
+        functions
+            .sendFriendRequest(req.params.id, userId)
+            .then((result) => {
+                if (result === 400) {
+                    res.status(400).send('You cannot add yourself')
+                } else if (result === 409) {
+                    res.status(409).send('Already friends or requested')
+                } else if (result) {
+                    res.status(201).json(result)
+                } else {
+                    res.status(404).send('User not found')
+                }
+            })
+            .catch((error) => res.status(500).send(error.name))
+    }
+)
+
+function answerRoute(accept) {
+    return (req, res) => {
+        if (!idParam(req.params.requestId)) {
+            return res.status(404).send('Request not found')
+        }
+        functions
+            .answerFriendRequest(req.params.id, req.params.requestId, accept)
+            .then((result) => {
+                if (result) res.status(204).send()
+                else res.status(404).send('Request not found')
+            })
+            .catch((error) => res.status(500).send(error.name))
+    }
+}
+
+app.post(
+    '/users/:id/friend-requests/:requestId/accept',
+    functions.authenticateUser,
+    ownerOnly,
+    answerRoute(true)
+)
+
+app.delete(
+    '/users/:id/friend-requests/:requestId',
+    functions.authenticateUser,
+    ownerOnly,
+    answerRoute(false)
+)
+
+app.delete(
+    '/users/:id/friends/:friendId',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        if (!idParam(req.params.friendId)) {
+            return res.status(404).send('Friend not found')
+        }
+        functions
+            .removeFriend(req.params.id, req.params.friendId)
+            .then((result) => {
+                if (result) res.status(204).send()
+                else res.status(404).send('Friend not found')
+            })
+            .catch((error) => res.status(500).send(error.name))
+    }
+)
+
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']
     functions
