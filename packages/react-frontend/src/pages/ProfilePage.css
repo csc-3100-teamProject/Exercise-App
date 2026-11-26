@@ -315,3 +315,43 @@ body:has(.profile-page),
     width: 24px;
     height: 24px;
 }
+
+.profile-page {
+    font-family: Inter, -apple-system, 'Segoe UI', Arial, sans-serif;
+}
+
+.profile-content h1 {
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+}
+
+.profile-content h2 {
+    font-weight: 500;
+}
+
+.profile-page {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.profile-content {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.profile-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.profile-page .profile-nav {
+    width: 100%;
+    max-width: 520px;
+    box-sizing: border-box;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+}
