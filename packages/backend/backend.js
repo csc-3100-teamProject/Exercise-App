@@ -95,6 +95,23 @@ app.post('/auth/login', (req, res) => {
         })
 })
 
+app.put('/auth/reset-password', (req, res) => {
+ const {email, password} = req.body;
+ if(!email || !password) {
+     return res.status(400).send('Email and new password are required')
+ }
+ functions.resetPassword(email, password)
+     .then((result) => {
+         if(!result) {
+             return res.status(404).send('User not found')
+         }
+         return res.status(200).send('Password updated')
+     })
+     .catch((error) => {
+         res.status(500).send(error.name)
+     })
+})
+
 app.get('/users/:id/overview', (req, res) => {
     const id = req.params['id']
     const today = req.query.date
@@ -149,25 +166,21 @@ app.patch(
     functions.authenticateUser,
     (req, res) => {
         const { id, workoutId } = req.params
-
         if (
             !mongoose.isValidObjectId(id) ||
             !mongoose.isValidObjectId(workoutId)
         ) {
             return res.status(404).send('Workout not found')
         }
-
         if (req.user.id !== id) {
             return res.status(403).send('Forbidden')
         }
-
         functions
             .updateWorkout(id, workoutId, req.body)
             .then((workout) => {
                 if (!workout) {
                     return res.status(404).send('Workout not found')
                 }
-
                 res.status(200).json(workout)
             })
             .catch((error) => {
@@ -185,25 +198,21 @@ app.delete(
     functions.authenticateUser,
     (req, res) => {
         const { id, workoutId } = req.params
-
         if (
             !mongoose.isValidObjectId(id) ||
             !mongoose.isValidObjectId(workoutId)
         ) {
             return res.status(404).send('Workout not found')
         }
-
         if (req.user.id !== id) {
             return res.status(403).send('Forbidden')
         }
-
         functions
             .deleteWorkout(id, workoutId)
             .then((workout) => {
                 if (!workout) {
                     return res.status(404).send('Workout not found')
                 }
-
                 res.status(204).send()
             })
             .catch((error) => {
@@ -214,11 +223,9 @@ app.delete(
 
 app.get('/users/:id/profile', (req, res) => {
     const id = req.params.id
-
     if (!mongoose.isValidObjectId(id)) {
         return res.status(404).send('User not found')
     }
-
     functions
         .getProfile(id)
         .then((user) => {
@@ -233,15 +240,12 @@ app.get('/users/:id/profile', (req, res) => {
 app.patch('/users/:id/profile', (req, res) => {
     const id = req.params.id
     const { username, email } = req.body ?? {}
-
     if (!mongoose.isValidObjectId(id)) {
         return res.status(404).send('User not found')
     }
-
     if (!isNonEmptyString(username) || !isNonEmptyString(email)) {
         return res.status(400).send('Username and email are required')
     }
-
     functions
         .updateProfile(id, {
             username: username.trim(),
