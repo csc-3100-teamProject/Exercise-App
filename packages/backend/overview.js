@@ -29,7 +29,7 @@ export function workoutVolume(workout) {
     )
 }
 
-function streaks(completed, goal, currentWeek) {
+export function streaks(completed, goal, currentWeek) {
     const perWeek = {}
     for (const w of completed) {
         const key = weekStart(w.date)

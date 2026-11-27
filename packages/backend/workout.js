@@ -27,6 +27,9 @@ const WorkoutSchema = new mongoose.Schema(
         durationMin: { type: Number, min: 1, max: 1600 },
         exercises: { type: [ExerciseSchema], default: [] },
         completed: { type: Boolean, default: false },
+        completedAt: { type: Date },
+        notes: { type: String, trim: true, maxlength: 280 },
+        distanceMi: { type: Number, min: 0 },
     },
     { collection: 'workouts_list' }
 )
