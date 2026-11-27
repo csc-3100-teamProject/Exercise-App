@@ -221,50 +221,203 @@ app.delete(
     }
 )
 
-app.get('/users/:id/profile', (req, res) => {
-    const id = req.params.id
-    if (!mongoose.isValidObjectId(id)) {
+// Profile routes are only available to the logged-in owner.
+function ownerOnly(req, res, next) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
         return res.status(404).send('User not found')
     }
-    functions
-        .getProfile(id)
-        .then((user) => {
-            if (user) res.status(200).json(user)
-            else res.status(404).send('User not found')
-        })
-        .catch((error) => {
-            res.status(500).send(error.name)
-        })
-})
+    if (req.user.id !== req.params.id) {
+        return res.status(403).send('Forbidden')
+    }
+    next()
+}
 
-app.patch('/users/:id/profile', (req, res) => {
-    const id = req.params.id
-    const { username, email } = req.body ?? {}
-    if (!mongoose.isValidObjectId(id)) {
-        return res.status(404).send('User not found')
-    }
-    if (!isNonEmptyString(username) || !isNonEmptyString(email)) {
-        return res.status(400).send('Username and email are required')
-    }
-    functions
-        .updateProfile(id, {
-            username: username.trim(),
-            email: email.trim(),
-        })
-        .then((user) => {
-            if (user) res.status(200).json(user)
-            else res.status(404).send('User not found')
-        })
-        .catch((error) => {
-            if (error.code === 11000) {
-                res.status(409).send('Username or email already exists')
-            } else if (error.name === 'ValidationError') {
-                res.status(400).send(error.message)
-            } else {
+app.get(
+    '/users/:id/profile',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const today = req.query.date
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) {
+            return res.status(400).send('date must be YYYY-MM-DD')
+        }
+        functions
+            .getProfile(req.params.id, today)
+            .then((profile) => {
+                if (profile) res.status(200).json(profile)
+                else res.status(404).send('User not found')
+            })
+            .catch((error) => {
                 res.status(500).send(error.name)
-            }
-        })
-})
+            })
+    }
+)
+
+const { LEVELS, UNITS, EQUIPMENT } = functions.PROFILE_OPTIONS
+const EDITABLE_TEXT = { fullName: 60, bio: 200 }
+
+// Returns the cleaned updates, or null if any field is invalid.
+function cleanProfileUpdates(body) {
+    const updates = {}
+    for (const [field, max] of Object.entries(EDITABLE_TEXT)) {
+        if (body[field] === undefined) continue
+        if (typeof body[field] !== 'string' || body[field].length > max) {
+            return null
+        }
+        updates[field] = body[field].trim()
+    }
+    for (const field of ['username', 'email']) {
+        if (body[field] === undefined) continue
+        if (!isNonEmptyString(body[field])) return null
+        updates[field] = body[field].trim()
+    }
+    if (updates.email !== undefined && !/^\S+@\S+\.\S+$/.test(updates.email)) {
+        return null
+    }
+    const choices = { level: LEVELS, units: UNITS, equipment: EQUIPMENT }
+    for (const [field, allowed] of Object.entries(choices)) {
+        if (body[field] === undefined) continue
+        if (!allowed.includes(body[field])) return null
+        updates[field] = body[field]
+    }
+    if (body.weeklyGoal !== undefined) {
+        const goal = body.weeklyGoal
+        if (!Number.isInteger(goal) || goal < 1 || goal > 7) return null
+        updates.weeklyGoal = goal
+    }
+    return updates
+}
+
+app.patch(
+    '/users/:id/profile',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const updates = cleanProfileUpdates(req.body ?? {})
+        if (!updates) return res.status(400).send('Invalid profile fields')
+        functions
+            .updateProfile(req.params.id, updates)
+            .then((user) => {
+                if (user === 409) {
+                    res.status(409).send('Username or email already exists')
+                } else if (user) {
+                    res.status(200).json(user)
+                } else {
+                    res.status(404).send('User not found')
+                }
+            })
+            .catch((error) => {
+                if (error.name === 'ValidationError') {
+                    res.status(400).send(error.message)
+                } else {
+                    res.status(500).send(error.name)
+                }
+            })
+    }
+)
+
+const idParam = (value) => mongoose.isValidObjectId(value)
+
+function sendOrNotFound(res, result, notFound = 'Not found') {
+    if (result) res.status(200).json(result)
+    else res.status(404).send(notFound)
+}
+
+app.get(
+    '/users/:id/friends',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        functions
+            .getFriends(req.params.id)
+            .then((result) => sendOrNotFound(res, result, 'User not found'))
+            .catch((error) => res.status(500).send(error.name))
+    }
+)
+
+app.get(
+    '/users/:id/people',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const query = typeof req.query.q === 'string' ? req.query.q : ''
+        functions
+            .searchPeople(req.params.id, query)
+            .then((result) => sendOrNotFound(res, result, 'User not found'))
+            .catch((error) => res.status(500).send(error.name))
+    }
+)
+
+app.post(
+    '/users/:id/friends',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const { userId } = req.body ?? {}
+        if (!idParam(userId)) return res.status(400).send('userId is required')
+        functions
+            .sendFriendRequest(req.params.id, userId)
+            .then((result) => {
+                if (result === 400) {
+                    res.status(400).send('You cannot add yourself')
+                } else if (result === 409) {
+                    res.status(409).send('Already friends or requested')
+                } else if (result) {
+                    res.status(201).json(result)
+                } else {
+                    res.status(404).send('User not found')
+                }
+            })
+            .catch((error) => res.status(500).send(error.name))
+    }
+)
+
+function answerRoute(accept) {
+    return (req, res) => {
+        if (!idParam(req.params.requestId)) {
+            return res.status(404).send('Request not found')
+        }
+        functions
+            .answerFriendRequest(req.params.id, req.params.requestId, accept)
+            .then((result) => {
+                if (result) res.status(204).send()
+                else res.status(404).send('Request not found')
+            })
+            .catch((error) => res.status(500).send(error.name))
+    }
+}
+
+app.post(
+    '/users/:id/friend-requests/:requestId/accept',
+    functions.authenticateUser,
+    ownerOnly,
+    answerRoute(true)
+)
+
+app.delete(
+    '/users/:id/friend-requests/:requestId',
+    functions.authenticateUser,
+    ownerOnly,
+    answerRoute(false)
+)
+
+app.delete(
+    '/users/:id/friends/:friendId',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        if (!idParam(req.params.friendId)) {
+            return res.status(404).send('Friend not found')
+        }
+        functions
+            .removeFriend(req.params.id, req.params.friendId)
+            .then((result) => {
+                if (result) res.status(204).send()
+                else res.status(404).send('Friend not found')
+            })
+            .catch((error) => res.status(500).send(error.name))
+    }
+)
 
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']

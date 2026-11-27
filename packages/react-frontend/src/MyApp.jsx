@@ -6,7 +6,9 @@ import ProgressPage from './pages/ProgressPage'
 import ProfilePage from './pages/ProfilePage'
 import RoutinesPage from './pages/RoutinesPage'
 
-const API_URL = 'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
+const API_URL =
+    import.meta.env.VITE_API_URL ??
+    'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
 
 const devUser =
     import.meta.env.DEV && import.meta.env.VITE_DEV_USER_ID
