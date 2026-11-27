@@ -75,6 +75,16 @@ function authenticateUser(req, res, next) {
     })
 }
 
+async function resetPassword(email, password) {
+    const hashed = await bcrypt.hash(password, 12)
+
+    return userModel.findOneAndUpdate(
+        { email: email.trim() },
+        { password: hashed },
+        { new: true }
+    )
+}
+
 async function addUser(user) {
     const finduser = await findUserByUsername(user.username)
     const findemail = await findUserByEmail(user.email)
@@ -409,6 +419,7 @@ export default {
     getUsers,
     registerUser,
     authenticateUser,
+    resetPassword,
     addUser,
     findUserById,
     findUserByUsername,
