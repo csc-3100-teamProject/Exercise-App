@@ -122,40 +122,6 @@
     color: var(--muted);
 }
 
-.routines-page .bottom-nav {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 10;
-    display: flex;
-    justify-content: space-around;
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 12px 8px 18px;
-    box-sizing: content-box;
-    background: rgba(10, 12, 15, 0.95);
-    border-top: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-}
-
-.routines-page .bottom-nav button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    min-width: 60px;
-    padding: 0;
-    background: none;
-    border: 0;
-    color: var(--muted);
-    font-size: 11px;
-}
-
-.routines-page .bottom-nav .nav-active {
-    color: var(--lime);
-}
-
 @media (max-width: 380px) {
     .routines-page {
         padding: 24px 12px 110px;
@@ -165,7 +131,86 @@
         padding: 16px;
     }
 
-    .routines-page .bottom-nav button {
-        font-size: 10px;
-    }
+}
+
+.routines-header,
+.routines-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.routines-header {
+    justify-content: space-between;
+}
+
+.routines-page .routines-primary {
+    padding: 10px 12px;
+    background: var(--lime);
+    color: #080a0d;
+    border: 0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.routine-form,
+.routine-search {
+    display: grid;
+    gap: 10px;
+}
+
+.routine-search {
+    margin-top: 12px;
+}
+
+.routine-form label,
+.routine-search,
+.routine-exercise legend {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.routine-form input,
+.routine-form select,
+.routine-form textarea,
+.routine-search input {
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #1c232c;
+    color: #f5f7fa;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color-scheme: dark;
+}
+
+.routine-exercise {
+    min-width: 0;
+    margin: 0;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.routine-exercise input {
+    margin-top: 5px;
+}
+
+.routine-targets {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.routines-page .routines-danger,
+.routines-page .routines-error {
+    color: #ff8b8b;
+}
+
+.routines-page .routines-success {
+    color: #7ee0a0;
 }

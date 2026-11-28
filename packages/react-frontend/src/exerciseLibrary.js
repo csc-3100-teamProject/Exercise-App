@@ -1,6 +1,7 @@
-/*
 import library from './exerciseLibrary.json'
-*/
+
+export const EXERCISES = library
+
 export const TRACKING_FIELDS = {
     sets: { label: 'Sets', unit: 'sets', min: 1, max: 1000, step: 1 },
     reps: { label: 'Reps', unit: 'reps', min: 1, max: 1000, step: 1 },
@@ -21,16 +22,29 @@ export const TRACKING_FORMATS = {
     time: { label: 'Time', fields: ['durationMin'] },
     weight_distance: { label: 'Sets, load and distance', fields: ['sets', 'weight', 'distanceMeters'] }
 }
-/*
-export const EXERCISES = library.map((exercise) => ({
 
-}))
+export function findExercise(name) {
+    if (typeof name !== 'string') return undefined
+    const search = name.trim().toLowerCase()
+    return EXERCISES.find((exercise) =>
+        exercise.name.toLowerCase() === search
+    )
+}
 
 export function trackingFields(exercise) {
-    
+    const fields = TRACKING_FORMATS[exercise.trackingFormat]?.fields || TRACKING_FORMATS.weight_reps.fields
+    return fields.map((key) => {
+        const field = TRACKING_FIELDS[key]
+        const label = key === 'weight' && exercise.trackingFormat === 'bodyweight_reps'
+            ? 'Added load (lb)'
+            : field.label
+        return { ...field, key, label }
+    })
 }
 
 export function exerciseTargets(exercise) {
-
+    return trackingFields(exercise)
+        .filter(({ key }) => exercise[key] != null && exercise[key] !== '')
+        .map(({ key, unit }) => `${exercise[key]} ${unit}`)
+        .join(' · ')
 }
-*/
