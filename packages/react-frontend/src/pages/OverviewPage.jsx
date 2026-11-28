@@ -1,9 +1,8 @@
 import './OverviewPage.css'
 import { useEffect, useState } from 'react'
+import { API_URL as API } from '../apiConfig'
+import { exerciseTargets } from './exerciseLibrary'
 
-const API =
-    import.meta.env.VITE_API_URL ??
-    'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
 const MAX_EXERCISES_SHOWN = 3
 
 function localDateString(date = new Date()) {
@@ -30,6 +29,9 @@ function formatTime(time) {
 }
 
 function formatTarget(exercise) {
+    if (exercise.trackingFormat && !['weight_reps', 'bodyweight_reps'].includes(exercise.trackingFormat)) {
+        return exerciseTargets(exercise)
+    }
     const parts = []
     if (exercise.sets && exercise.reps) {
         parts.push(`${exercise.sets} × ${exercise.reps}`)
@@ -42,9 +44,10 @@ const NUMBER_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five']
 
 function planSummary(plan) {
     if (plan.length === 0) return 'Nothing planned today'
-    const minutes = plan.reduce((sum, w) => sum + w.durationMin, 0)
+    const minutes = plan.reduce((sum, w) => sum + (w.durationMin || 0), 0)
     const count = NUMBER_WORDS[plan.length] ?? plan.length
-    return `${count} workout${plan.length === 1 ? '' : 's'} · about ${minutes} min`
+    const time = minutes > 0 ? ` · about ${minutes} min` : ''
+    return `${count} workout${plan.length === 1 ? '' : 's'}${time}`
 }
 
 function Icon({ name }) {
@@ -128,8 +131,8 @@ function WorkoutCard({ workout, onStart }) {
 
             <p className="workout-details">
                 {time && <span>{time}</span>}
-                {time && <i aria-hidden="true" />}
-                <span>{workout.durationMin} min</span>
+                {time && workout.durationMin > 0 && <i aria-hidden="true" />}
+                {workout.durationMin > 0 && <span>{workout.durationMin} min</span>}
             </p>
 
             {shown.length > 0 && (
@@ -192,7 +195,7 @@ function RecentActivity({ activity }) {
                         </div>
                         <div className="activity-duration">
                             <p>Duration</p>
-                            <strong>{item.durationMin} min</strong>
+                            <strong>{item.durationMin > 0 ? `${item.durationMin} min` : '—'}</strong>
                         </div>
                     </div>
                 ))}
@@ -352,6 +355,9 @@ function OverviewPage({ user, onStart, onAdd, onNavigate }) {
         const controller = new AbortController()
         fetch(`${API}/users/${user.id}/overview?date=${localDateString()}`, {
             signal: controller.signal,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
         })
             .then((response) => {
                 if (!response.ok) throw new Error('Request failed')

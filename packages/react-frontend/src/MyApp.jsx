@@ -1,19 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import LoginPage from './pages/LoginPage'
 import OverviewPage from './pages/OverviewPage'
 import CalendarPage from './pages/CalendarPage'
 import ProgressPage from './pages/ProgressPage'
 import ProfilePage from './pages/ProfilePage'
 import RoutinesPage from './pages/RoutinesPage'
-
-const API_URL =
-    import.meta.env.VITE_API_URL ??
-    'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
-
-const devUser =
-    import.meta.env.DEV && import.meta.env.VITE_DEV_USER_ID
-        ? { id: import.meta.env.VITE_DEV_USER_ID }
-        : null
+import { API_URL } from './apiConfig'
 
 function localDateString(date = new Date()) {
     const year = date.getFullYear()
@@ -37,7 +29,7 @@ function readWorkouts(storageKey) {
                         workout.category
                     ) &&
                     /^\d{4}-\d{2}-\d{2}$/.test(workout.date) &&
-                    (workout.durationMin === undefined ||
+                    (workout.durationMin == null ||
                         (Number.isInteger(workout.durationMin) &&
                             workout.durationMin >= 0 &&
                             workout.durationMin <= 1440)) &&
@@ -61,8 +53,10 @@ function readWorkouts(storageKey) {
 function UserPages({ user, onLogout }) {
     const storageKey = `formflow-workouts-${user.id}`
     const [calendar, setCalendar] = useState(() => readWorkouts(storageKey))
+    const latestWorkouts = useRef(calendar.workouts)
     const [currentPage, setCurrentPage] = useState('overview')
     const [showCalendarForm, setShowCalendarForm] = useState(false)
+    const [routineDraft, setRoutineDraft] = useState(null)
 
     function authHeaders() {
         return {
@@ -72,6 +66,9 @@ function UserPages({ user, onLogout }) {
     }
 
     useEffect(() => {
+        let active = true
+        const startingWorkouts = latestWorkouts.current
+
         fetch(`${API_URL}/users/${user.id}/workouts`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -82,14 +79,21 @@ function UserPages({ user, onLogout }) {
                 return response.json()
             })
             .then((workouts) => {
+                // A workout saved while this request was loading takes precedence.
+                if (!active || latestWorkouts.current !== startingWorkouts) return
+                latestWorkouts.current = workouts
                 setCalendar({ workouts, error: '' })
             })
             .catch(() => {
+                if (!active || latestWorkouts.current !== startingWorkouts) return
                 setCalendar({
-                    workouts: [],
+                    workouts: startingWorkouts,
                     error: 'Could not load workouts from the server.',
                 })
             })
+        return () => {
+            active = false
+        }
     }, [user.id])
 
     function navigate(page) {
@@ -105,10 +109,12 @@ function UserPages({ user, onLogout }) {
             return
         setCurrentPage(page)
         setShowCalendarForm(false)
+        setRoutineDraft(null)
         window.scrollTo(0, 0)
     }
 
     function updateWorkouts(workouts) {
+        latestWorkouts.current = workouts
         let error = ''
         try {
             localStorage.setItem(storageKey, JSON.stringify(workouts))
@@ -119,53 +125,53 @@ function UserPages({ user, onLogout }) {
         setCalendar({ workouts, error })
     }
 
-    function saveWorkout(workout) {
+    async function saveWorkout(workout) {
         const isExistingWorkout = Boolean(workout._id)
 
         const endpoint = isExistingWorkout
             ? `${API_URL}/users/${user.id}/workouts/${workout._id}`
             : `${API_URL}/users/${user.id}/workouts`
+        const payload = { ...workout }
+        if (isExistingWorkout && payload.durationMin === undefined) {
+            payload.durationMin = null
+        }
 
-        return fetch(endpoint, {
+        const response = await fetch(endpoint, {
             method: isExistingWorkout ? 'PATCH' : 'POST',
             headers: authHeaders(),
-            body: JSON.stringify(workout),
+            body: JSON.stringify(payload),
         })
-            .then(async (response) => {
-                if (!response.ok) {
-                    const message = await response.text()
-                    throw new Error(
-                        `Could not save workout: ${response.status} ${message}`
-                    )
-                }
-
-                return response.json()
-            })
-            .then((savedWorkout) => {
-                const exists = calendar.workouts.some(
-                    (item) => item._id === savedWorkout._id
-                )
-
-                const updated = exists
-                    ? calendar.workouts.map((item) =>
-                          item._id === savedWorkout._id ? savedWorkout : item
-                      )
-                    : [...calendar.workouts, savedWorkout]
-
-                updateWorkouts(updated)
-            })
-            .catch((error) => {
-                setCalendar((current) => ({
-                    ...current,
-                    error: error.message,
-                }))
-            })
+        if (!response.ok) {
+            throw new Error('Could not save the workout.')
+        }
+        const savedWorkout = await response.json()
+        const workouts = latestWorkouts.current
+        const exists = workouts.some(
+            (item) => (item.id || item._id) === (savedWorkout.id || savedWorkout._id)
+        )
+        const updated = exists
+            ? workouts.map((item) =>
+                (item.id || item._id) === (savedWorkout.id || savedWorkout._id) ? savedWorkout : item
+            )
+            : [...workouts, savedWorkout]
+        updateWorkouts(updated)
     }
 
-    function deleteWorkout(id) {
+    async function deleteWorkout(id) {
+        const workout = latestWorkouts.current.find(
+            (item) => (item.id || item._id) === id
+        )
+        if (workout?._id) {
+            const response = await fetch(
+                `${API_URL}/users/${user.id}/workouts/${workout._id}`,
+                { method: 'DELETE', headers: authHeaders() }
+            )
+            if (!response.ok) throw new Error('Could not delete the workout.')
+        }
+
         updateWorkouts(
-            calendar.workouts.filter(
-                (workout) => (workout.id || workout._id) !== id
+            latestWorkouts.current.filter(
+                (item) => (item.id || item._id) !== id
             )
         )
     }
@@ -188,10 +194,23 @@ function UserPages({ user, onLogout }) {
             completed: !workout.completed,
         }
 
-        saveWorkout(updatedWorkout)
+        return saveWorkout(updatedWorkout)
     }
 
     function openCalendarForm() {
+        setRoutineDraft(null)
+        setShowCalendarForm(true)
+        setCurrentPage('calendar')
+        window.scrollTo(0, 0)
+    }
+
+    function scheduleRoutine(routine) {
+        setRoutineDraft({
+            name: routine.name,
+            category: routine.category,
+            durationMin: routine.durationMin,
+            exercises: routine.exercises.map((exercise) => ({ ...exercise })),
+        })
         setShowCalendarForm(true)
         setCurrentPage('calendar')
         window.scrollTo(0, 0)
@@ -207,6 +226,7 @@ function UserPages({ user, onLogout }) {
                 onNavigate={navigate}
                 storageError={calendar.error}
                 startWithForm={showCalendarForm}
+                routineDraft={routineDraft}
             />
         )
     }
@@ -222,7 +242,13 @@ function UserPages({ user, onLogout }) {
     }
 
     if (currentPage === 'routines') {
-        return <RoutinesPage user={user} onNavigate={navigate} />
+        return (
+            <RoutinesPage
+                user={user}
+                onNavigate={navigate}
+                onUseRoutine={scheduleRoutine}
+            />
+        )
     }
 
     if (currentPage === 'profile') {
@@ -245,21 +271,28 @@ function UserPages({ user, onLogout }) {
 }
 
 function MyApp() {
-    const [user, setUser] = useState(devUser)
+    const [user, setUser] = useState(null)
 
     if (!user) {
-    return (
-        <LoginPage
-            onLogin={(loggedInUser) => {
-                localStorage.setItem('token', loggedInUser.token)
-                setUser(loggedInUser)
-            }}
+        return (
+            <LoginPage
+                onLogin={(loggedInUser) => {
+                    localStorage.setItem('token', loggedInUser.token)
+                    setUser(loggedInUser)
+                }}
             />
         )
     }
 
     return (
-        <UserPages key={user.id} user={user} onLogout={() => setUser(null)} />
+        <UserPages
+            key={user.id}
+            user={user}
+            onLogout={() => {
+                localStorage.removeItem('token')
+                setUser(null)
+            }}
+        />
     )
 }
 

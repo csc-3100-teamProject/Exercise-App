@@ -1,10 +1,8 @@
 import './ProfilePage.css'
 import { useEffect, useState } from 'react'
 import BottomNav from '../components/BottomNav'
+import { API_URL as API } from '../apiConfig'
 
-const API =
-    import.meta.env.VITE_API_URL ??
-    'https://formflow-c8f8crdtadajebea.westus-01.azurewebsites.net'
 
 function localDateString(date = new Date()) {
     return date.toLocaleDateString('en-CA') // YYYY-MM-DD
@@ -55,7 +53,7 @@ function formatWhen(at, now = new Date()) {
 function feedMeta(item) {
     const parts = []
     if (item.distanceMi) parts.push(`${item.distanceMi} miles`)
-    parts.push(`${item.durationMin} min`)
+    if (item.durationMin > 0) parts.push(`${item.durationMin} min`)
     if (item.volume) parts.push(`${item.volume.toLocaleString()} lb volume`)
     parts.push(formatWhen(item.at))
     return parts.join(' · ')

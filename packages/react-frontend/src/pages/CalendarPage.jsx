@@ -80,20 +80,24 @@ function CalendarPage({
     onNavigate,
     storageError,
     startWithForm = false,
+    routineDraft,
 }) {
     const [currentDate, setCurrentDate] = useState(new Date())
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [showForm, setShowForm] = useState(startWithForm)
+    const [showForm, setShowForm] = useState(startWithForm || !!routineDraft)
     const [form, setForm] = useState({
-        name: '',
-        category: 'Strength',
+        name: routineDraft?.name || '',
+        category: routineDraft?.category || 'Strength',
         date: dateString(new Date()),
         time: '18:00',
+        durationMin: routineDraft?.durationMin ?? '',
+        exercises: routineDraft?.exercises || [],
     })
     const [editing, setEditing] = useState(false)
     const [deleted, setDeleted] = useState(null)
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
+    const [saving, setSaving] = useState(false)
 
     const year = currentDate.getFullYear()
     const month = currentDate.getMonth()
@@ -123,12 +127,14 @@ function CalendarPage({
     }
 
     function changeMonth(amount) {
+        if (saving) return
         const next = new Date(year, month + amount, 1)
         setCurrentDate(next)
         selectDate(next)
     }
 
     function openForm(workout) {
+        if (saving) return
         if (workout) {
             setForm({ ...workout })
             setEditing(true)
@@ -138,6 +144,7 @@ function CalendarPage({
                 category: 'Strength',
                 date: selected,
                 time: '18:00',
+                durationMin: '',
             })
             setEditing(false)
         }
@@ -154,8 +161,9 @@ function CalendarPage({
         setError('')
     }
 
-    function saveWorkout(event) {
+    async function saveWorkout(event) {
         event.preventDefault()
+        if (saving) return
 
         if (!form.name.trim()) {
             setError('Enter a workout name.')
@@ -194,39 +202,81 @@ function CalendarPage({
             )
             return
         }
-        onSaveWorkout({
-            ...form,
-            name: form.name.trim(),
-            durationMin: duration,
-            completed: form.completed || false,
-            exercises: form.exercises || [],
-        })
-        setCurrentDate(new Date(date.getFullYear(), date.getMonth(), 1))
-        setSelectedDate(date)
-        setShowForm(false)
-        setMessage(editing ? 'Workout updated.' : 'Workout scheduled.')
+        setSaving(true)
+        setError('')
+        setMessage('')
+        try {
+            await onSaveWorkout({
+                ...form,
+                name: form.name.trim(),
+                durationMin: duration,
+                completed: form.completed || false,
+                exercises: form.exercises || [],
+            })
+            setCurrentDate(new Date(date.getFullYear(), date.getMonth(), 1))
+            setSelectedDate(date)
+            setShowForm(false)
+            setMessage(editing ? 'Workout updated.' : 'Workout scheduled.')
+        } catch {
+            setError('Could not save the workout. Please try again.')
+        } finally {
+            setSaving(false)
+        }
     }
 
-    function removeWorkout(workout) {
-        onDeleteWorkout(workout.id || workout._id)
-        setDeleted(workout)
-        setShowForm(false)
-        setMessage('Workout deleted.')
+    async function removeWorkout(workout) {
+        if (saving) return
+        setSaving(true)
+        setError('')
+        setMessage('')
+        try {
+            await onDeleteWorkout(workout.id || workout._id)
+            setDeleted(workout)
+            setShowForm(false)
+            setMessage('Workout deleted.')
+        } catch {
+            setError('Could not delete the workout. Please try again.')
+        } finally {
+            setSaving(false)
+        }
     }
 
-    function undoDelete() {
-        onSaveWorkout(deleted)
-        const date = parseDate(deleted.date)
-        setCurrentDate(new Date(date.getFullYear(), date.getMonth(), 1))
-        selectDate(date)
-        setDeleted(null)
-        setMessage('Workout restored.')
+    async function undoDelete() {
+        if (saving) return
+        setSaving(true)
+        setError('')
+        setMessage('')
+        try {
+            const restored = { ...deleted }
+            delete restored.id
+            delete restored._id
+            await onSaveWorkout(restored)
+            const date = parseDate(deleted.date)
+            setCurrentDate(new Date(date.getFullYear(), date.getMonth(), 1))
+            selectDate(date)
+            setDeleted(null)
+            setMessage('Workout restored.')
+        } catch {
+            setError('Could not restore the workout. Please try again.')
+        } finally {
+            setSaving(false)
+        }
     }
 
-    function toggleWorkout(workout) {
-        onToggleWorkout(workout.id || workout._id)
-        setShowForm(false)
-        setMessage('Workout status updated.')
+    async function toggleWorkout(workout) {
+        if (saving) return
+        setSaving(true)
+        setError('')
+        setMessage('')
+        try {
+            await onToggleWorkout(workout.id || workout._id)
+            setShowForm(false)
+            setMessage('Workout status updated.')
+        } catch {
+            setError('Could not update the workout. Please try again.')
+        } finally {
+            setSaving(false)
+        }
     }
 
     return (
@@ -237,9 +287,9 @@ function CalendarPage({
                     Plan your training. Track your progress.
                 </p>
 
-                {storageError && (
+                {(error || storageError) && (
                     <p className="calendar-error" role="alert">
-                        {storageError}
+                        {error || storageError}
                     </p>
                 )}
 
@@ -247,6 +297,7 @@ function CalendarPage({
                     type="button"
                     className="calendar-add"
                     aria-expanded={showForm}
+                    disabled={saving}
                     onClick={() => openForm()}
                 >
                     + Schedule workout
@@ -263,6 +314,7 @@ function CalendarPage({
                             value={form.name}
                             onChange={handleChange}
                             maxLength={80}
+                            disabled={saving}
                             autoFocus
                             required
                         />
@@ -272,6 +324,7 @@ function CalendarPage({
                             id="workout-category"
                             name="category"
                             value={form.category}
+                            disabled={saving}
                             onChange={handleChange}
                         >
                             {CATEGORIES.map((category) => (
@@ -285,6 +338,7 @@ function CalendarPage({
                             type="date"
                             name="date"
                             value={form.date}
+                            disabled={saving}
                             onChange={handleChange}
                             min="1900-01-01"
                             max="2100-12-31"
@@ -297,23 +351,39 @@ function CalendarPage({
                             type="time"
                             name="time"
                             value={form.time}
+                            disabled={saving}
                             onChange={handleChange}
                             required
                         />
 
-                        {error && (
-                            <p className="calendar-error" role="alert">
-                                {error}
+                        <label htmlFor="workout-duration">
+                            Duration (minutes, optional)
+                        </label>
+                        <input
+                            id="workout-duration"
+                            name="durationMin"
+                            type="number"
+                            min="1"
+                            max="1440"
+                            value={form.durationMin || ''}
+                            disabled={saving}
+                            onChange={handleChange}
+                        />
+
+                        {form.exercises?.length > 0 && (
+                            <p className="calendar-subtitle">
+                                Exercises: {form.exercises.map((exercise) => exercise.name).join(', ')}
                             </p>
                         )}
 
                         <div className="calendar-actions">
-                            <button type="submit" className="calendar-save">
-                                {editing ? 'Save changes' : 'Schedule workout'}
+                            <button type="submit" className="calendar-save" disabled={saving}>
+                                {saving ? 'Saving...' : editing ? 'Save changes' : 'Schedule workout'}
                             </button>
                             <button
                                 type="button"
                                 className="calendar-link"
+                                disabled={saving}
                                 onClick={() => setShowForm(false)}
                             >
                                 Cancel
@@ -329,6 +399,7 @@ function CalendarPage({
                             <button
                                 type="button"
                                 aria-label="Previous month"
+                                disabled={saving}
                                 onClick={() => changeMonth(-1)}
                             >
                                 ‹
@@ -336,6 +407,7 @@ function CalendarPage({
                             <button
                                 type="button"
                                 aria-label="Next month"
+                                disabled={saving}
                                 onClick={() => changeMonth(1)}
                             >
                                 ›
@@ -372,6 +444,7 @@ function CalendarPage({
                                 <button
                                     type="button"
                                     key={day}
+                                    disabled={saving}
                                     className={dayClass}
                                     aria-pressed={isSelected(day)}
                                     aria-current={
@@ -423,6 +496,7 @@ function CalendarPage({
                         <button
                             type="button"
                             className="calendar-link"
+                            disabled={saving}
                             onClick={() => {
                                 setCurrentDate(new Date())
                                 selectDate(new Date())
@@ -445,6 +519,7 @@ function CalendarPage({
                         <button
                             type="button"
                             className="calendar-link"
+                            disabled={saving}
                             onClick={undoDelete}
                         >
                             Undo
@@ -476,15 +551,18 @@ function CalendarPage({
                             <p>
                                 {formatTime(workout.time)} · {workout.category}{' '}
                                 · {workout.completed ? 'Completed' : 'Planned'}
+                                {workout.durationMin > 0 ? ` · ${workout.durationMin} min` : ''}
                             </p>
+                            {workout.exercises?.length > 0 && (
+                                <p>Exercises: {workout.exercises.map((exercise) => exercise.name).join(', ')}</p>
+                            )}
 
                             <div className="calendar-actions">
                                 <button
                                     type="button"
                                     className="calendar-complete"
                                     disabled={
-                                        !workout.completed &&
-                                        workout.date > today
+                                        saving || (!workout.completed && workout.date > today)
                                     }
                                     onClick={() => toggleWorkout(workout)}
                                 >
@@ -496,6 +574,7 @@ function CalendarPage({
                                 <button
                                     type="button"
                                     className="calendar-link"
+                                    disabled={saving}
                                     onClick={() => openForm(workout)}
                                 >
                                     Edit
@@ -504,6 +583,7 @@ function CalendarPage({
                                 <button
                                     type="button"
                                     className="calendar-delete"
+                                    disabled={saving}
                                     onClick={() => removeWorkout(workout)}
                                 >
                                     Delete

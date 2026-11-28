@@ -4,16 +4,9 @@ import workoutModel from './workout.js'
 import friendshipModel from './friendship.js'
 import { buildOverview } from './overview.js'
 import { buildProfile, displayName } from './profile.js'
-import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
-dotenv.config()
 import jwt from 'jsonwebtoken'
-mongoose.set('debug', true)
 
-// Tests connect to their own in-memory database instead.
-if (process.env.NODE_ENV !== 'test') {
-    mongoose.connect(process.env.MONGO_URI)
-}
 function getUsers(username, email) {
     let promise
     if (username === undefined && email === undefined) {
@@ -75,16 +68,6 @@ function authenticateUser(req, res, next) {
     })
 }
 
-async function resetPassword(email, password) {
-    const hashed = await bcrypt.hash(password, 12)
-
-    return userModel.findOneAndUpdate(
-        { email: email.trim() },
-        { password: hashed },
-        { new: true }
-    )
-}
-
 async function addUser(user) {
     const finduser = await findUserByUsername(user.username)
     const findemail = await findUserByEmail(user.email)
@@ -122,8 +105,10 @@ async function getOverview(id, today) {
 async function addWorkout(userId, workout) {
     const user = await findUserById(userId)
     if (!user) return null
-    const { name, category, date, time, durationMin, exercises, completed } =
-        workout
+    const {
+        name, category, date, time, durationMin, exercises, completed,
+        completedAt, notes, distanceMi,
+    } = workout
     return new workoutModel({
         userId,
         name,
@@ -133,6 +118,9 @@ async function addWorkout(userId, workout) {
         durationMin,
         exercises,
         completed: completed ?? false,
+        completedAt,
+        notes,
+        distanceMi,
     }).save()
 }
 
@@ -145,15 +133,24 @@ function updateWorkout(userId, workoutId, workout) {
         'durationMin',
         'exercises',
         'completed',
+        'completedAt',
+        'notes',
+        'distanceMi',
     ]
 
     const updates = Object.fromEntries(
         Object.entries(workout).filter(([key]) => allowedFields.includes(key))
     )
 
+    const changes = { $set: updates }
+    if (updates.durationMin === null) {
+        delete updates.durationMin
+        changes.$unset = { durationMin: 1 }
+    }
+
     return workoutModel.findOneAndUpdate(
         { _id: workoutId, userId },
-        { $set: updates },
+        changes,
         { new: true, runValidators: true }
     )
 }
@@ -419,7 +416,6 @@ export default {
     getUsers,
     registerUser,
     authenticateUser,
-    resetPassword,
     addUser,
     findUserById,
     findUserByUsername,

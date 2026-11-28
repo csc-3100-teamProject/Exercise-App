@@ -3,9 +3,22 @@ import mongoose from 'mongoose'
 const ExerciseSchema = new mongoose.Schema(
     {
         name: { type: String, required: true, trim: true },
+        exerciseId: { type: String, trim: true },
+        trackingFormat: {
+            type: String,
+            enum: [
+                'weight_reps', 'bodyweight_reps', 'assistance_reps',
+                'timed_hold', 'time_distance', 'time', 'weight_distance',
+            ],
+        },
         sets: { type: Number, min: 0 },
         reps: { type: Number, min: 0 },
         weight: { type: Number, min: 0 },
+        assistanceWeight: { type: Number, min: 0, max: 10000 },
+        durationSec: { type: Number, min: 1, max: 86400 },
+        durationMin: { type: Number, min: 0.1, max: 1440 },
+        distanceKm: { type: Number, min: 0.01, max: 1000 },
+        distanceMeters: { type: Number, min: 0.1, max: 100000 },
     },
     { _id: false }
 )

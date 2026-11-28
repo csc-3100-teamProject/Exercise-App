@@ -3,13 +3,12 @@ import express from 'express'
 import cors from 'cors'
 import functions from './user-services.js'
 import mongoose from 'mongoose'
+import dotenv from 'dotenv'
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
-
-const port = 8000
 
 app.get('/', (req, res) => {
     res.send('Welcome to Exercise App Backend')
@@ -95,71 +94,74 @@ app.post('/auth/login', (req, res) => {
         })
 })
 
-app.put('/auth/reset-password', (req, res) => {
- const {email, password} = req.body;
- if(!email || !password) {
-     return res.status(400).send('Email and new password are required')
- }
- functions.resetPassword(email, password)
-     .then((result) => {
-         if(!result) {
-             return res.status(404).send('User not found')
-         }
-         return res.status(200).send('Password updated')
-     })
-     .catch((error) => {
-         res.status(500).send(error.name)
-     })
-})
-
-app.get('/users/:id/overview', (req, res) => {
-    const id = req.params['id']
-    const today = req.query.date
-    if (!mongoose.isValidObjectId(id)) {
+// The login token must belong to the user in the URL.
+function ownerOnly(req, res, next) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
         return res.status(404).send('User not found')
     }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) {
-        return res.status(400).send('date must be YYYY-MM-DD')
+    if (req.user.id !== req.params.id) {
+        return res.status(403).send('Forbidden')
     }
-    functions
-        .getOverview(id, today)
-        .then((result) => {
-            if (result) res.send(result)
-            else res.status(404).send('User not found')
-        })
-        .catch((error) => {
-            res.status(500).send(error.name)
-        })
-})
+    next()
+}
 
-app.post('/users/:id/workouts', (req, res) => {
-    const id = req.params['id']
-    if (!mongoose.isValidObjectId(id)) {
-        return res.status(404).send('User not found')
-    }
-    functions
-        .addWorkout(id, req.body)
-        .then((result) => {
-            if (result) res.status(201).send(result)
-            else res.status(404).send('User not found')
-        })
-        .catch((error) => {
-            if (error.name === 'ValidationError') {
-                res.status(400).send(error.message)
-            } else {
+app.get(
+    '/users/:id/overview',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const id = req.params.id
+        const today = req.query.date
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) {
+            return res.status(400).send('date must be YYYY-MM-DD')
+        }
+        functions
+            .getOverview(id, today)
+            .then((result) => {
+                if (result) res.send(result)
+                else res.status(404).send('User not found')
+            })
+            .catch((error) => {
                 res.status(500).send(error.name)
-            }
-        })
-})
-app.get('/users/:id/workouts', (req, res) => {
-    const id = req.params['id']
-    functions
-        .findWorkout(id)
-        .then((workouts) => {
-            res.status(200).json(workouts)
-        })
-        .catch(() => res.status(500).send('Unable to get workout'))
-})
+            })
+    }
+)
+
+app.post(
+    '/users/:id/workouts',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const id = req.params.id
+        functions
+            .addWorkout(id, req.body)
+            .then((result) => {
+                if (result) res.status(201).send(result)
+                else res.status(404).send('User not found')
+            })
+            .catch((error) => {
+                if (error.name === 'ValidationError') {
+                    res.status(400).send(error.message)
+                } else {
+                    res.status(500).send(error.name)
+                }
+            })
+    }
+)
+app.get(
+    '/users/:id/workouts',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const id = req.params.id
+        functions
+            .findWorkout(id)
+            .then((workouts) => {
+                res.status(200).json(workouts)
+            })
+            .catch(() => res.status(500).send('Unable to get workout'))
+    }
+)
 
 app.patch(
     '/users/:id/workouts/:workoutId',
@@ -220,17 +222,6 @@ app.delete(
             })
     }
 )
-
-// Profile routes are only available to the logged-in owner.
-function ownerOnly(req, res, next) {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-        return res.status(404).send('User not found')
-    }
-    if (req.user.id !== req.params.id) {
-        return res.status(403).send('Forbidden')
-    }
-    next()
-}
 
 app.get(
     '/users/:id/profile',
@@ -419,22 +410,57 @@ app.delete(
     }
 )
 
-app.delete('/users/:id', (req, res) => {
-    const id = req.params['id']
-    functions
-        .findIdAndDestroy(id)
-        .then((result) => {
-            if (result) res.status(204).send()
-            else res.status(404).send('User not found.')
-        })
-        .catch((error) => {
-            res.status(500).send(error.name)
-        })
-})
+app.delete(
+    '/users/:id',
+    functions.authenticateUser,
+    ownerOnly,
+    (req, res) => {
+        const id = req.params['id']
+        functions
+            .findIdAndDestroy(id)
+            .then((result) => {
+                if (result) res.status(204).send()
+                else res.status(404).send('User not found.')
+            })
+            .catch((error) => {
+                res.status(500).send(error.name)
+            })
+    }
+)
+
+async function startServer() {
+    dotenv.config()
+
+    if (!process.env.MONGO_URI || !process.env.TOKEN_SECRET) {
+        throw new Error('Set MONGO_URI and TOKEN_SECRET in packages/backend/.env.')
+    }
+
+    const port = Number(process.env.PORT || 8000)
+    const host = process.env.HOST || '127.0.0.1'
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+        throw new Error('Set PORT to a whole number from 1 to 65535.')
+    }
+
+    try {
+        await mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
+    } catch {
+        throw new Error('Could not connect to MongoDB. Start MongoDB and check MONGO_URI.')
+    }
+
+    const server = app.listen(port, host, () => {
+        if (server.listening) console.log(`FormFlow API listening on http://${host}:${port}`)
+    })
+    server.on('error', (error) => {
+        console.error(`Could not listen on ${host}:${port}: ${error.code}`)
+        process.exitCode = 1
+        void mongoose.disconnect()
+    })
+}
 
 if (process.env.NODE_ENV !== 'test') {
-    app.listen(process.env.PORT || port, () => {
-        console.log(`Example app listening at http://localhost:${port}`)
+    startServer().catch((error) => {
+        console.error(error.message)
+        process.exitCode = 1
     })
 }
 
